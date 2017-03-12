@@ -37,7 +37,9 @@ namespace DamSword.Web
         {
             services.AddEntityFramework();
             services.AddEntityFrameworkSqlServer();
-            services.AddDbContext<EntityContext>(options => options.UseSqlServer(Configuration.GetConnectionString(AppConfig.EntityContextConnectionStringName)));
+            services.AddDbContext<EntityContext>(options => options
+                .UseSqlServer(Configuration.GetConnectionString(AppConfig.EntityContextConnectionStringName), contextOptions => contextOptions.MigrationsAssembly("DamSword.Web")));
+
             services.AddMvc();
             
             var builder = new ContainerBuilder();
