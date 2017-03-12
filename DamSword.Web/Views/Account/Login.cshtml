@@ -1,0 +1,11 @@
+﻿@model DamSword.Web.Models.Account.LoginViewModel
+@{
+    ViewBag.Title = "SoD - Login";
+}
+
+<form action="/account/login" method="POST">
+    <input type="text" id="Login" name="Login"/>
+    <input type="text" id="Password" name="Password"/>
+    <input type="hidden" id="ReturnUrl" name="ReturnUrl"/>
+    <button type="submit">Login</button>
+</form>

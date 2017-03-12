@@ -6,12 +6,18 @@ using DamSword.Services.App;
 
 namespace DamSword.Services
 {
+    public class SessionInfo
+    {
+        public long Id { get; set; }
+        public long UserId { get; set; }
+    }
+
     public interface ISessionService
     {
-        string GetNewSessionHash(long userId, string ipAddress, bool persistent);
+        string GetNewSessionHash(long userId, string remoteIpAddress, bool persistent);
         void ExtendSession(int id, TimeSpan time);
         void RemoveSession(int id);
-        long? GetSessionUserId(string hash, string ipAddress);
+        SessionInfo GetSession(string hash, string remoteIpAddress);
     }
 
     public class SessionService : IService, ISessionService
@@ -20,7 +26,7 @@ namespace DamSword.Services
         public IUserRepository UserRepository { get; set; }
         public IUnitOfWork UnitOfWork { get; set; }
 
-        public string GetNewSessionHash(long userId, string ipAddress, bool persistent)
+        public string GetNewSessionHash(long userId, string remoteIpAddress, bool persistent)
         {
             if (!UserRepository.Any(u => u.Id == userId))
                 throw new InvalidOperationException("User doesn't exist.");
@@ -31,7 +37,7 @@ namespace DamSword.Services
             {
                 UserId = userId,
                 SessionHash = hash,
-                RemoteIpAddress = ipAddress,
+                RemoteIpAddress = remoteIpAddress,
                 ExpirationTime = persistent ? now.AddMonths(1) : now.AddDays(1)
             };
 
@@ -59,9 +65,13 @@ namespace DamSword.Services
             UnitOfWork.Commit();
         }
 
-        public long? GetSessionUserId(string hash, string ipAddress)
+        public SessionInfo GetSession(string hash, string remoteIpAddress)
         {
-            return SessionRepository.FirstOrDefault(s => s.SessionHash == hash && s.RemoteIpAddress == ipAddress && s.ExpirationTime <= DateTime.UtcNow, s => s.UserId);
+            return SessionRepository.FirstOrDefault(s => s.SessionHash == hash && s.RemoteIpAddress == remoteIpAddress && s.ExpirationTime > DateTime.UtcNow, s => new SessionInfo
+            {
+                Id = s.Id,
+                UserId = s.UserId
+            });
         }
     }
 }
