@@ -3,9 +3,21 @@
     ViewBag.Title = "SoD - Login";
 }
 
-<form action="/account/login" method="POST">
-    <input type="text" id="Login" name="Login"/>
-    <input type="text" id="Password" name="Password"/>
-    <input type="hidden" id="ReturnUrl" name="ReturnUrl"/>
-    <button type="submit">Login</button>
-</form>
+<div class="row">
+    <div class="col-md-12">
+        <form action="/account/login" method="POST">
+            <input type="hidden" id="ReturnUrl" name="ReturnUrl" />
+
+            <div class="form-group">
+                <label for="Login">Email address</label>
+                <input type="text" id="Login" name="Login" class="form-control" placeholder="Login" />
+            </div>
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input type="text" id="Password" name="Password" class="form-control" placeholder="Password" />
+            </div>
+
+            <button type="submit" class="btn btn-default">Login</button>
+        </form>
+    </div>
+</div>
