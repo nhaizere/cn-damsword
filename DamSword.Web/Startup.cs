@@ -68,6 +68,11 @@ namespace DamSword.Web
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<EntityContext>();
+                if (env.IsDevelopment())
+                {
+                    context.Database.EnsureDeleted();
+                }
+
                 context.Database.EnsureCreated();
 
                 if (env.IsDevelopment())
