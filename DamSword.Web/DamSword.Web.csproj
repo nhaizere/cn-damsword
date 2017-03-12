@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.4.0" />
@@ -29,6 +29,9 @@
     <ProjectReference Include="..\DamSword.Data\DamSword.Data.csproj" />
     <ProjectReference Include="..\DamSword.Providers\DamSword.Providers.csproj" />
     <ProjectReference Include="..\DamSword.Services\DamSword.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
   </ItemGroup>
 
 </Project>
