@@ -7,7 +7,7 @@ namespace DamSword.Data
         long Id { get; set; }
         DateTime CreatedAt { get; set; }
         DateTime ModifiedAt { get; set; }
-        long CreatedByUserId { get; set; }
-        long ModifiedByUserId { get; set; }
+        long? CreatedByUserId { get; set; }
+        long? ModifiedByUserId { get; set; }
     }
 }

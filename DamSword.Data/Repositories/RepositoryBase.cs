@@ -8,7 +8,7 @@ namespace DamSword.Data.Repositories
     public interface IEntityRepository<TEntity>
         where TEntity : IEntity
     {
-        void Save(TEntity entity);
+        void Save(TEntity entity, int? userId = null);
         void Delete(TEntity entity);
 
         TEntity GetById(long id);
@@ -51,10 +51,17 @@ namespace DamSword.Data.Repositories
             Query = _entityContext.Set<TEntity>(asNoTracking);
         }
 
-        public void Save(TEntity entity)
+        public void Save(TEntity entity, int? userId)
         {
+            entity.ModifiedAt = DateTime.UtcNow;
+            entity.ModifiedByUserId = userId;
+
             if (entity.IsNew())
+            {
+                entity.CreatedAt = DateTime.UtcNow;
+                entity.CreatedByUserId = userId;
                 _entityContext.Add(entity);
+            }
             else
                 _entityContext.Attach(entity);
         }
