@@ -1,7 +1,9 @@
-﻿using DamSword.Common;
+﻿using System;
+using DamSword.Common;
 using DamSword.Data.Repositories;
 using DamSword.Services;
 using DamSword.Web.Models.Account;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DamSword.Web.Controllers
@@ -39,8 +41,11 @@ namespace DamSword.Web.Controllers
                 return RedirectToAction("Login", new { returnUrl = model.ReturnUrl });
 
             var remoteIpAddress = HttpContext.GetRemoteIpAddress();
-            var sessionHash = _sessionService.GetNewSessionHash(userId, remoteIpAddress, model.Persistent);
-            Response.Cookies.Append("session", sessionHash);
+            var session = _sessionService.CreateSession(userId, remoteIpAddress, model.Persistent);
+            Response.Cookies.Append("session", session.Hash, new CookieOptions
+            {
+                Expires = new DateTimeOffset(session.ExpirationTime)
+            });
 
             return Redirect(model.ReturnUrl ?? "/");
         }
