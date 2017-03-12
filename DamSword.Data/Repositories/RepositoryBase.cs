@@ -11,6 +11,8 @@ namespace DamSword.Data.Repositories
         void Save(TEntity entity);
         void Delete(TEntity entity);
 
+        TEntity GetById(long id);
+        TResult GetById<TResult>(long id, Expression<Func<TEntity, TResult>> selector);
         IQueryable<TEntity> Select(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TResult> Select<TResult>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TResult>> selector);
         IQueryable<TEntity> SelectAll();
@@ -60,6 +62,16 @@ namespace DamSword.Data.Repositories
         public virtual void Delete(TEntity entity)
         {
             _entityContext.Remove(entity);
+        }
+
+        public TEntity GetById(long id)
+        {
+            return Single(e => e.Id == id);
+        }
+
+        public TResult GetById<TResult>(long id, Expression<Func<TEntity, TResult>> selector)
+        {
+            return Single(e => e.Id == id, selector);
         }
 
         public IQueryable<TEntity> Select(Expression<Func<TEntity, bool>> predicate)
