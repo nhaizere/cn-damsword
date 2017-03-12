@@ -3,10 +3,12 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DamSword.Common;
 using DamSword.Data;
+using DamSword.Web.DatabaseInitializers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,6 +18,7 @@ namespace DamSword.Web
     public class Startup
     {
         public IConfigurationRoot Configuration { get; }
+        public IHostingEnvironment HostingEnvironment { get; }
         public IContainer ApplicationContainer { get; set; }
 
         public Startup(IHostingEnvironment env)
@@ -27,6 +30,7 @@ namespace DamSword.Web
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            HostingEnvironment = env;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -37,7 +41,7 @@ namespace DamSword.Web
             services.AddMvc();
             
             var builder = new ContainerBuilder();
-            DependenciesConfig.Configure(builder);
+            DependenciesConfig.Configure(builder, !HostingEnvironment.IsDevelopment());
             builder.Populate(services);
 
             ApplicationContainer = builder.Build();
@@ -46,11 +50,11 @@ namespace DamSword.Web
             return new AutofacServiceProvider(ApplicationContainer);
         }
         
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole();
 
-            InitializeDatabase(app, env);
+            ConfigureDatabase(app, HostingEnvironment);
             app.UseDeveloperExceptionPage();
             
             app.UseMvc(routes =>
@@ -63,21 +67,22 @@ namespace DamSword.Web
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
 
-        private static void InitializeDatabase(IApplicationBuilder app, IHostingEnvironment env)
+        private static void ConfigureDatabase(IApplicationBuilder app, IHostingEnvironment env)
         {
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<EntityContext>();
-                if (env.IsDevelopment())
+                var isDbExist = ((RelationalDatabaseCreator)context.GetService<IDatabaseCreator>()).Exists();
+
+                if (!isDbExist)
                 {
-                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+                    serviceScope.ServiceProvider.GetService<IDatabaseInitializer>().Initialize(context);
                 }
-
-                context.Database.EnsureCreated();
-
-                if (env.IsDevelopment())
+                else if (env.IsDevelopment())
                 {
                     context.Database.Migrate();
+                    serviceScope.ServiceProvider.GetService<IDatabaseInitializer>().Initialize(context);
                 }
             }
         }
