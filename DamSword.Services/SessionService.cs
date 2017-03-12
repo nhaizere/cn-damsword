@@ -2,7 +2,6 @@
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
-using DamSword.Services.App;
 
 namespace DamSword.Services
 {

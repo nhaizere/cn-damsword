@@ -9,7 +9,7 @@ using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Repositories;
 using DamSword.Providers;
-using DamSword.Services.App;
+using DamSword.Services;
 
 namespace DamSword.Web
 {

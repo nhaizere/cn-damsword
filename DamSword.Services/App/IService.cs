@@ -1,4 +1,4 @@
-﻿namespace DamSword.Services.App
+﻿namespace DamSword.Services
 {
     public interface IService
     {
