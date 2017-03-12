@@ -1,5 +1,4 @@
-﻿using System.Text.Encodings.Web;
-using DamSword.Common;
+﻿using DamSword.Common;
 using DamSword.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,9 @@ namespace DamSword.Web.Attributes
             if (session == null)
             {
                 var returnUrl = context.HttpContext.Request.GetUri().PathAndQuery;
-                var returnUrlEncoded = returnUrl == "/" ? string.Empty : UrlEncoder.Default.Encode(context.HttpContext.Request.GetUri().PathAndQuery);
+
+                // TODO: encode return URL
+                var returnUrlEncoded = returnUrl == "/" ? string.Empty : context.HttpContext.Request.GetUri().PathAndQuery;
                 context.Result = new RedirectResult($"/account/login{(returnUrlEncoded.IsEmpty() ? string.Empty : $"?returnUrl={returnUrlEncoded}")}");
             }
         }
