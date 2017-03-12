@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using DamSword.Common;
+using DamSword.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -12,26 +15,66 @@ namespace DamSword.Web
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public IConfigurationRoot Configuration { get; }
+        public IContainer ApplicationContainer { get; set; }
+
+        public Startup(IHostingEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
+        {
+            services.AddEntityFramework();
+            services.AddEntityFrameworkSqlServer();
+            services.AddDbContext<EntityContext>(options => options.UseSqlServer(Configuration.GetConnectionString(AppConfig.EntityContextConnectionStringName)));
+            services.AddMvc();
+            
+            var builder = new ContainerBuilder();
+            DependenciesConfig.Configure(builder);
+            builder.Populate(services);
+
+            ApplicationContainer = builder.Build();
+            ServiceLocator.SetResolver(t => ApplicationContainer.Resolve<IServiceProvider>().GetService(t));
+            
+            return new AutofacServiceProvider(ApplicationContainer);
+        }
+        
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole();
 
-            if (env.IsDevelopment())
+            InitializeDatabase(app, env);
+            app.UseDeveloperExceptionPage();
+            
+            app.UseMvc(routes =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
+        }
+
+        private static void InitializeDatabase(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<EntityContext>();
+                context.Database.EnsureCreated();
+
+                if (env.IsDevelopment())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }

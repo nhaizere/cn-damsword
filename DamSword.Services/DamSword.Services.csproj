@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DamSword.Common\DamSword.Common.csproj" />
+    <ProjectReference Include="..\DamSword.Data\DamSword.Data.csproj" />
+    <ProjectReference Include="..\DamSword.Providers\DamSword.Providers.csproj" />
+  </ItemGroup>
+
+</Project>
