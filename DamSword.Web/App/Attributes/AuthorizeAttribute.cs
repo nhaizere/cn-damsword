@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DamSword.Web.Attributes
 {
-    public class Authorize : ActionFilterAttribute
+    public class AuthorizeAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
