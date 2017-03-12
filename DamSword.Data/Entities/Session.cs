@@ -14,5 +14,7 @@ namespace DamSword.Data.Entities
         public string RemoteIpAddress { get; set; }
 
         public DateTime ExpirationTime { get; set; }
+
+        public virtual User User { get; set; }
     }
 }
