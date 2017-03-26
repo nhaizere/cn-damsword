@@ -101,12 +101,15 @@ namespace DamSword.Web
             {
                 var remoteIpAddress = context.GetRemoteIpAddress();
                 var sessionHash = ServiceLocator.Resolve<IAuthenticationService>().GetCurrentSessionHash(context);
-                var session = ServiceLocator.Resolve<ISessionService>().GetSession(sessionHash, remoteIpAddress);
+                var sessionInfo = ServiceLocator.Resolve<ISessionService>().GetSession(sessionHash, remoteIpAddress);
 
                 User user = null;
-                if (session != null)
-                    user = ServiceLocator.Resolve<IUserRepository>().GetById(session.UserId);
+                if (sessionInfo != null)
+                    user = ServiceLocator.Resolve<IUserRepository>().GetById(sessionInfo.UserId);
 
+                var session = ServiceLocator.Resolve<ISessionRepository>().GetById(sessionInfo.Id);
+
+                SessionScope.Begin(session);
                 UserScope.Begin(user);
                 await next();
             });
