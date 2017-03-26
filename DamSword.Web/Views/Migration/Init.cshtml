@@ -1,0 +1,52 @@
+﻿@model DamSword.Web.Models.Migration.InitViewModel
+
+@{
+    ViewBag.Title = "Initialization | SoD";
+}
+
+@if (Model.IsInitialized)
+{
+    <p>Application has been already initialized.</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-lg-offset-5 col-lg-3 col-md-offset-3 col-md-6">
+            <h1>
+                <strong>
+                    <i>Sword of Damocles</i>
+                </strong>
+                <br />
+                <small>Initialization</small>
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-offset-5 col-lg-3 col-md-offset-3 col-md-6">
+            <form action="/migration/init" method="POST" data-toggle="validator">
+                <div class="form-group">
+                    <label for="Alias">Alias</label>
+                    <input type="text" id="Alias" name="Alias" class="form-control" placeholder="Alias" data-minlength="5" required />
+                    <p class="help-block with-errors"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="Login">Login</label>
+                    <input type="text" id="Login" name="Login" class="form-control" placeholder="Login" data-minlength="5" required />
+                    <p class="help-block with-errors"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <input type="password" id="Password" name="Password" class="form-control" placeholder="Password" data-minlength="6" required />
+                    <p class="help-block with-errors"></p>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default pull-right">Create Owner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
