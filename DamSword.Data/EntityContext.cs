@@ -23,6 +23,7 @@ namespace DamSword.Data
         public virtual DbSet<PersonMetaProvider> PersonMetaProviders { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Watch> Watches { get; set; }
         public virtual DbSet<WebResource> WebResources { get; set; }
 
         public EntityContext(DbContextOptions options)
