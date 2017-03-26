@@ -13,7 +13,7 @@ namespace DamSword.Services
         public DateTime ExpirationTime { get; set; }
     }
 
-    public interface ISessionService
+    public interface ISessionService : IService
     {
         void ExtendSession(long id, TimeSpan time);
         void RemoveSession(long id);
@@ -21,7 +21,7 @@ namespace DamSword.Services
         SessionInfo CreateSession(long userId, string remoteIpAddress, bool persistent);
     }
 
-    public class SessionService : IService, ISessionService
+    public class SessionService : ISessionService
     {
         public ISessionRepository SessionRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
