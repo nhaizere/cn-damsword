@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using DamSword.Data.Events;
 
 namespace DamSword.Data.Repositories
 {
-    public interface IEntityRepository<TEntity>
+    public interface IEntityRepository<TEntity> : IEntityEventsProvider<TEntity>
         where TEntity : IEntity
     {
         void Save(TEntity entity, int? userId = null);
@@ -204,6 +205,34 @@ namespace DamSword.Data.Repositories
         public IEnumerable<EntityChange<TEntity>> GetChanges()
         {
             return _entityContext.GetEntityChanges<TEntity>();
+        }
+
+        public IEnumerable<IEntityEvent<TEntity>> GetEntityEvents()
+        {
+            var changes = GetChanges();
+            var events = changes.Select(change =>
+            {
+                EntityEventBase<TEntity> @event;
+                switch (change.State)
+                {
+                    case EntityChangeState.Added:
+                        @event = new EntityAddedEvent<TEntity>();
+                        break;
+                    case EntityChangeState.Deleted:
+                        @event = new EntityDeletedEvent<TEntity>();
+                        break;
+                    case EntityChangeState.Modified:
+                        @event = new EntityModifiedEvent<TEntity> { ModifiedProperties = change.ModifiedProperties };
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unknown Entity change state: \"{change.State}\".");
+                }
+
+                @event.Entity = change.Entity;
+                return @event;
+            }).ToArray();
+
+            return events;
         }
     }
 }

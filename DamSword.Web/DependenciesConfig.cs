@@ -4,12 +4,15 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Core;
+using Autofac.Extras.DynamicProxy;
 using Autofac.Features.Variance;
 using DamSword.Common;
+using DamSword.Common.Events;
 using DamSword.Data;
 using DamSword.Data.Repositories;
 using DamSword.Providers;
 using DamSword.Services;
+using DamSword.Web.Events;
 
 namespace DamSword.Web
 {
@@ -81,17 +84,16 @@ namespace DamSword.Web
                     .InstancePerLifetimeScope();
             }
 
-            //builder.RegisterType<EntityChangeEventPublisherEntityContextInterceptor>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies).InstancePerLifetimeScope();
+            builder.RegisterType<EntityChangeEventPublisherEntityContextInterceptor>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies).InstancePerLifetimeScope();
             builder.RegisterType<EntityContext>()
                 .As<IEntityContext>()
                 .PropertiesAutowired()
-                //.EnableInterfaceInterceptors()
-                //.InterceptedBy(typeof(EntityChangeEventPublisherEntityContextInterceptor))
+                .EnableInterfaceInterceptors()
+                .InterceptedBy(typeof(EntityChangeEventPublisherEntityContextInterceptor))
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().PropertiesAutowired().InstancePerLifetimeScope();
-            //builder.RegisterType<EventPublisher>().As<IEventPublisher>().PropertiesAutowired().InstancePerLifetimeScope();
-            //builder.RegisterType<TransactionalActonInvoker>().As<ITransactionalActonInvoker>().PropertiesAutowired().InstancePerLifetimeScope();
+            builder.RegisterType<EventPublisher>().As<IEventPublisher>().PropertiesAutowired().InstancePerLifetimeScope();
         }
     }
 }
