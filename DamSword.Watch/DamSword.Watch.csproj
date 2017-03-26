@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Vk\DTO\Education.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DamSword.Common\DamSword.Common.csproj" />
     <ProjectReference Include="..\DamSword.Data\DamSword.Data.csproj" />
   </ItemGroup>
