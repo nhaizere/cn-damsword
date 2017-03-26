@@ -1,17 +1,11 @@
-﻿using DamSword.Data.Repositories;
+﻿using DamSword.Web.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DamSword.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly IUserRepository _userRepository;
-
-        public HomeController(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
-
         public ActionResult Index()
         {
             return new EmptyResult();
