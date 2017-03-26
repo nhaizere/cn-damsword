@@ -1,5 +1,4 @@
-﻿using DamSword.Common;
-using DamSword.Common.Events;
+﻿using DamSword.Common.Events;
 
 namespace DamSword.Data.Events
 {
