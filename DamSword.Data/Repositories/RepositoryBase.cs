@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using DamSword.Common;
 using DamSword.Data.Events;
 
 namespace DamSword.Data.Repositories
 {
-    public interface IEntityRepository<TEntity> : IEntityEventsProvider<TEntity>
+    public interface IEntityRepository<TEntity> : IEntityEventsProvider<TEntity>, IService
         where TEntity : IEntity
     {
         void Save(TEntity entity);

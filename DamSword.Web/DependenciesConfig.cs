@@ -9,9 +9,6 @@ using Autofac.Features.Variance;
 using DamSword.Common;
 using DamSword.Common.Events;
 using DamSword.Data;
-using DamSword.Data.Repositories;
-using DamSword.Providers;
-using DamSword.Services;
 using DamSword.Web.Events;
 
 namespace DamSword.Web
@@ -64,7 +61,7 @@ namespace DamSword.Web
         {
             builder.RegisterSource(new ContravariantRegistrationSource());
             
-            var repositoryTypes = AssemblyTypes.Where(t => t.ImplementsGenericType(typeof(IEntityRepository<>)) | t.ImplementsInterface<IProvider>() | t.ImplementsInterface<IService>()).ToArray();
+            var repositoryTypes = AssemblyTypes.Where(t => t.ImplementsInterface<IService>()).ToArray();
             foreach (var repositoryType in repositoryTypes)
             {
                 builder.RegisterType(repositoryType)

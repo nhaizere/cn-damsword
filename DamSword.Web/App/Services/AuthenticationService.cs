@@ -1,4 +1,5 @@
 ﻿using System;
+using DamSword.Common;
 using DamSword.Data.Repositories;
 using DamSword.Services;
 using Microsoft.AspNetCore.Http;

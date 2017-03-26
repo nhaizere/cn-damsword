@@ -1,4 +1,5 @@
 ﻿using System;
+using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;

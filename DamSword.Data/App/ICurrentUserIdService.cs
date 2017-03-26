@@ -1,6 +1,8 @@
-﻿namespace DamSword.Data
+﻿using DamSword.Common;
+
+namespace DamSword.Data
 {
-    public interface ICurrentUserIdService
+    public interface ICurrentUserIdService : IService
     {
         long? GetCurrentUserId();
     }

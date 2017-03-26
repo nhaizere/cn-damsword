@@ -1,6 +1,6 @@
 ﻿namespace DamSword.Common.Events
 {
-    public interface IEventPublisher
+    public interface IEventPublisher : IService
     {
         void PublishEvent(object @event);
     }

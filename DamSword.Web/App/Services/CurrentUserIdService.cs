@@ -1,9 +1,8 @@
 ﻿using DamSword.Data;
-using DamSword.Services;
 
 namespace DamSword.Web.Services
 {
-    public class CurrentUserIdService : ICurrentUserIdService, IService
+    public class CurrentUserIdService : ICurrentUserIdService
     {
         public long? GetCurrentUserId()
         {

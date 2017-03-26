@@ -1,7 +1,6 @@
-﻿namespace DamSword.Services
+﻿namespace DamSword.Common
 {
     public interface IService
     {
-        
     }
 }
