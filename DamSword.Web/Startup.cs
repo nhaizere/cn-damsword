@@ -59,14 +59,13 @@ namespace DamSword.Web
         
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime, IHttpContextAccessor contextAccessor)
         {
-            ConfigureScopeContainer(app, contextAccessor);
-            ConfigureScopes(app);
-
             loggerFactory.AddConsole();
-
-            ConfigureDatabase(app, HostingEnvironment);
             app.UseDeveloperExceptionPage();
 
+            ConfigureScopeContainer(app, contextAccessor);
+            ConfigureScopes(app);
+            ConfigureDatabase(app, HostingEnvironment);
+            
             app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = ctx =>
@@ -74,7 +73,7 @@ namespace DamSword.Web
                     ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=86400");
                 }
             });
-            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
