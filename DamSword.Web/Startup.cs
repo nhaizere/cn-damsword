@@ -6,7 +6,6 @@ using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
 using DamSword.Services;
-using DamSword.Web.DatabaseInitializers;
 using DamSword.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -123,12 +122,11 @@ namespace DamSword.Web
                 if (!isDbExist)
                 {
                     context.Database.EnsureCreated();
-                    serviceScope.ServiceProvider.GetService<IDatabaseInitializer>().Initialize(context);
                 }
                 else if (env.IsDevelopment())
                 {
+                    context.Database.EnsureCreated();
                     context.Database.Migrate();
-                    serviceScope.ServiceProvider.GetService<IDatabaseInitializer>().Initialize(context);
                 }
             }
         }

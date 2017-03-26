@@ -10,7 +10,6 @@ using DamSword.Data;
 using DamSword.Data.Repositories;
 using DamSword.Providers;
 using DamSword.Services;
-using DamSword.Web.DatabaseInitializers;
 
 namespace DamSword.Web
 {
@@ -93,9 +92,6 @@ namespace DamSword.Web
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().PropertiesAutowired().InstancePerLifetimeScope();
             //builder.RegisterType<EventPublisher>().As<IEventPublisher>().PropertiesAutowired().InstancePerLifetimeScope();
             //builder.RegisterType<TransactionalActonInvoker>().As<ITransactionalActonInvoker>().PropertiesAutowired().InstancePerLifetimeScope();
-
-            builder.RegisterType(isProduction ? typeof(ProductionDatabaseInitializer) : typeof(TestDatabaseInitializer))
-                .As<IDatabaseInitializer>().PropertiesAutowired().InstancePerLifetimeScope();
         }
     }
 }
