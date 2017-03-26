@@ -7,6 +7,7 @@ namespace DamSword.Data.Entities
         public DateTime Date { get; set; }
         public int PersonId { get; set; }
         public int WebResourceId { get; set; }
+        public int Type { get; set; }
         public byte[] Data { get; set; }
         
         public virtual Person Person { get; set; }
