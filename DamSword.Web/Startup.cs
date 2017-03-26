@@ -3,7 +3,11 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DamSword.Common;
 using DamSword.Data;
+using DamSword.Data.Entities;
+using DamSword.Data.Repositories;
+using DamSword.Services;
 using DamSword.Web.DatabaseInitializers;
+using DamSword.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -53,14 +57,17 @@ namespace DamSword.Web
             return new AutofacServiceProvider(ApplicationContainer);
         }
         
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime, IHttpContextAccessor contextAccessor)
         {
+            ConfigureScopeContainer(app, contextAccessor);
+            ConfigureScopes(app);
+
             loggerFactory.AddConsole();
 
             ConfigureDatabase(app, HostingEnvironment);
             app.UseDeveloperExceptionPage();
 
-            app.UseStaticFiles(new StaticFileOptions()
+            app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = ctx =>
                 {
@@ -76,6 +83,35 @@ namespace DamSword.Web
             });
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
+        }
+
+        private static void ConfigureScopeContainer(IApplicationBuilder app, IHttpContextAccessor contextAccessor)
+        {
+            const string scopeContainerContextItemName = "SOD_SCOPE_CONTAINER";
+
+            ScopeContainer.SetScopeStackResolver(() => (ScopeContainer)contextAccessor.HttpContext.Items[scopeContainerContextItemName]);
+            app.Use(async (context, next) =>
+            {
+                context.Items[scopeContainerContextItemName] = new ScopeContainer();
+                await next();
+            });
+        }
+
+        private static void ConfigureScopes(IApplicationBuilder app)
+        {
+            app.Use(async (context, next) =>
+            {
+                var remoteIpAddress = context.GetRemoteIpAddress();
+                var sessionHash = ServiceLocator.Resolve<IAuthenticationService>().GetCurrentSessionHash(context);
+                var session = ServiceLocator.Resolve<ISessionService>().GetSession(sessionHash, remoteIpAddress);
+
+                User user = null;
+                if (session != null)
+                    user = ServiceLocator.Resolve<IUserRepository>().GetById(session.UserId);
+
+                UserScope.Begin(user);
+                await next();
+            });
         }
 
         private static void ConfigureDatabase(IApplicationBuilder app, IHostingEnvironment env)

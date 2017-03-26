@@ -11,6 +11,11 @@ namespace DamSword.Common
     {
         public static TScope Current => ScopeContainer.Current.Peek<TScope>();
 
+        public static TScope Begin(params object[] constructorArguments)
+        {
+            return (TScope)Activator.CreateInstance(typeof(TScope), constructorArguments);
+        }
+
         protected ScopeBase()
         {
             ScopeContainer.Current.Push<TScope>(this);

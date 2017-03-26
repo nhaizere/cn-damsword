@@ -1,6 +1,4 @@
 ﻿using DamSword.Common;
-using DamSword.Services;
-using DamSword.Web.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -11,13 +9,8 @@ namespace DamSword.Web.Attributes
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var authenticationService = ServiceLocator.Resolve<IAuthenticationService>();
-            var sessionService = ServiceLocator.Resolve<ISessionService>();
-            var sessionHash = authenticationService.GetCurrentSessionHash(context.HttpContext);
-            var remoteIpAddress = context.HttpContext.GetRemoteIpAddress();
-            var session = sessionService.GetSession(sessionHash, remoteIpAddress);
-
-            if (session == null)
+            var user = UserScope.Current.User;
+            if (user == null)
             {
                 var returnUrl = context.HttpContext.Request.GetUri().PathAndQuery;
 
