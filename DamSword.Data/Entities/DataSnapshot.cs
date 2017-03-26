@@ -5,8 +5,8 @@ namespace DamSword.Data.Entities
     public class DataSnapshot : EntityBase
     {
         public DateTime Date { get; set; }
-        public int PersonId { get; set; }
-        public int WebResourceId { get; set; }
+        public long PersonId { get; set; }
+        public long WebResourceId { get; set; }
         public int Type { get; set; }
         public byte[] Data { get; set; }
         
