@@ -15,7 +15,7 @@ namespace DamSword.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Login(string returnUrl)
+        public IActionResult Login(string returnUrl)
         {
             // TODO: implement smart anti-XSS logic
             if (returnUrl.NonNullOrEmpty() && !returnUrl.StartsWith("/"))
@@ -29,7 +29,7 @@ namespace DamSword.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(LoginSaveModel model)
+        public IActionResult Login(LoginSaveModel model)
         {
             var isLoggedIn = _authenticationService.TryLogIn(model.Login, model.Password, model.Persistent, HttpContext);
             if (!isLoggedIn)
@@ -42,6 +42,15 @@ namespace DamSword.Web.Controllers
             }
 
             return Redirect(model.ReturnUrl ?? "/");
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            if (SessionScope.Current.Session != null)
+                _authenticationService.LogOut(SessionScope.Current.Session.Id, HttpContext);
+
+            return RedirectToAction("Login");
         }
     }
 }
