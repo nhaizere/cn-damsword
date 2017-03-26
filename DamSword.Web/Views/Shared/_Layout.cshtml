@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using DamSword.Web
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -12,6 +13,11 @@
     <script src="/lib/bootstrap-validator-0.11.9/js/validator.js"></script>
 </head>
 <body>
+    @if (UserScope.Current?.User != null)
+    {
+        @await Component.InvokeAsync("Navigation")
+    }
+
     <div class="container-fluid">
         @RenderBody()
     </div>

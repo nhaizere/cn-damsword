@@ -69,7 +69,7 @@ namespace DamSword.Web.Controllers
             if (!isLoggedIn)
                 throw new InvalidOperationException("Unable to perform Authentication for Owner.");
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Home");
         }
     }
 }
