@@ -28,8 +28,8 @@ namespace DamSword.Web
                     {
                         Assembly.Load(new AssemblyName("DamSword.Common")),
                         Assembly.Load(new AssemblyName("DamSword.Data")),
-                        Assembly.Load(new AssemblyName("DamSword.Providers")),
                         Assembly.Load(new AssemblyName("DamSword.Services")),
+                        Assembly.Load(new AssemblyName("DamSword.Watch")),
                         Assembly.Load(new AssemblyName("DamSword.Web"))
                     };
 
