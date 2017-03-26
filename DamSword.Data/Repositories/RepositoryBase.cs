@@ -9,7 +9,7 @@ namespace DamSword.Data.Repositories
     public interface IEntityRepository<TEntity> : IEntityEventsProvider<TEntity>
         where TEntity : IEntity
     {
-        void Save(TEntity entity, int? userId = null);
+        void Save(TEntity entity);
         void Delete(TEntity entity);
 
         TEntity GetById(long id);
@@ -43,6 +43,8 @@ namespace DamSword.Data.Repositories
     public abstract class EntityRepositoryBase<TEntity> : IEntityRepository<TEntity>
         where TEntity : class, IEntity
     {
+        public ICurrentUserIdService CurrentUserIdService { get; set; }
+
         private readonly IEntityContext _entityContext;
         protected readonly IQueryable<TEntity> Query;
 
@@ -52,15 +54,15 @@ namespace DamSword.Data.Repositories
             Query = _entityContext.Set<TEntity>(asNoTracking);
         }
 
-        public void Save(TEntity entity, int? userId)
+        public void Save(TEntity entity)
         {
             entity.ModifiedAt = DateTime.UtcNow;
-            entity.ModifiedByUserId = userId;
+            entity.ModifiedByUserId = CurrentUserIdService.GetCurrentUserId();
 
             if (entity.IsNew())
             {
                 entity.CreatedAt = DateTime.UtcNow;
-                entity.CreatedByUserId = userId;
+                entity.CreatedByUserId = CurrentUserIdService.GetCurrentUserId();
                 _entityContext.Add(entity);
             }
             else
