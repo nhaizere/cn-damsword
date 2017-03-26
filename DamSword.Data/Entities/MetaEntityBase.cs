@@ -10,7 +10,7 @@
     public class MetaEntityBase : EntityBase
     {
         public long PersonId { get; set; }
-        public long ProviderId { get; set; }
+        public long? ProviderId { get; set; }
         public MetaType Type { get; set; }
 
         public virtual Person Person { get; set; }

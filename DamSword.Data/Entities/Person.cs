@@ -9,6 +9,5 @@ namespace DamSword.Data.Entities
         public virtual ICollection<MetaConnection> ConnectedTo { get; set; }
         public virtual ICollection<MetaEmail> Emails { get; set; }
         public virtual ICollection<MetaName> Names { get; set; }
-        public virtual ICollection<MetaTimeline> Timelines { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace DamSword.Watch.Extensions
 {
     public static class DataSnapshotEntityExtensions
     {
-        public static IEnumerable<TDataSnapshotValue> GetSnapshots<TDataSnapshotValue>(this DataSnapshot self)
+        public static IEnumerable<TDataSnapshotValue> GetSnapshots<TDataSnapshotValue>(this MetaDataSnapshot self)
         {
             if (self == null)
                 throw new ArgumentNullException(nameof(self));
@@ -21,7 +21,7 @@ namespace DamSword.Watch.Extensions
             return JsonConvert.DeserializeObject<IEnumerable<TDataSnapshotValue>>(json);
         }
 
-        public static void SetSnapshots<TDataSnapshotValue>(this DataSnapshot self, IEnumerable<TDataSnapshotValue> snapshots)
+        public static void SetSnapshots<TDataSnapshotValue>(this MetaDataSnapshot self, IEnumerable<TDataSnapshotValue> snapshots)
         {
             if (self == null)
                 throw new ArgumentNullException(nameof(self));

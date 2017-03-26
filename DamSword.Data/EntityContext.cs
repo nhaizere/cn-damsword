@@ -9,13 +9,12 @@ namespace DamSword.Data
 {
     public class EntityContext : DbContext, IEntityContext
     {
-        public virtual DbSet<DataSnapshot> DataSnapshots { get; set; }
+        public virtual DbSet<MetaDataSnapshot> MetaDataSnapshots { get; set; }
         public virtual DbSet<EventLog> EventLogs { get; set; }
         public virtual DbSet<MetaAccount> MetaAccounts { get; set; }
         public virtual DbSet<MetaConnection> MetaConnections { get; set; }
         public virtual DbSet<MetaEmail> MetaEmails { get; set; }
         public virtual DbSet<MetaName> MetaNames { get; set; }
-        public virtual DbSet<MetaTimeline> MetaTimelines { get; set; }
         public virtual DbSet<Person> Persons { get; set; }
         public virtual DbSet<PersonMetaProvider> PersonMetaProviders { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
@@ -29,6 +28,11 @@ namespace DamSword.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<MetaAccount>()
+                .HasOne(a => a.WebResource)
+                .WithMany(r => r.MetaAccounts)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<MetaConnection>()
                 .HasOne(c => c.Person)
                 .WithMany(p => p.Connections)
