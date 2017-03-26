@@ -104,10 +104,12 @@ namespace DamSword.Web
                 var sessionInfo = ServiceLocator.Resolve<ISessionService>().GetSession(sessionHash, remoteIpAddress);
 
                 User user = null;
+                Session session = null;
                 if (sessionInfo != null)
+                {
                     user = ServiceLocator.Resolve<IUserRepository>().GetById(sessionInfo.UserId);
-
-                var session = ServiceLocator.Resolve<ISessionRepository>().GetById(sessionInfo.Id);
+                    session = ServiceLocator.Resolve<ISessionRepository>().GetById(sessionInfo.Id);
+                }
 
                 SessionScope.Begin(session);
                 UserScope.Begin(user);
