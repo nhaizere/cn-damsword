@@ -198,9 +198,6 @@ namespace DamSword.Watch.Vk.DTO
         
         #region Legacy
 
-        [JsonProperty("screen_name")]
-        public string AliasLegacy { get; set; }
-
         [JsonProperty("photo")]
         public string Photo50Legacy { get; set; }
 
