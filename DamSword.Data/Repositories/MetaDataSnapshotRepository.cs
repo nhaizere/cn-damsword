@@ -24,8 +24,9 @@ namespace DamSword.Data.Repositories
 
             return new MetaDataSnapshot
             {
-                Date = snapshotDate,
                 PersonId = personId,
+                ProviderId = providerId,
+                Date = snapshotDate,
                 SnapshotType = snapshotType
             };
         }
