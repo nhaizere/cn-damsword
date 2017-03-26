@@ -6,6 +6,7 @@ using DamSword.Data;
 using DamSword.Web.DatabaseInitializers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -58,6 +59,14 @@ namespace DamSword.Web
 
             ConfigureDatabase(app, HostingEnvironment);
             app.UseDeveloperExceptionPage();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=86400");
+                }
+            });
             
             app.UseMvc(routes =>
             {
