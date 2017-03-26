@@ -9,6 +9,7 @@ namespace DamSword.Data
 {
     public class EntityContext : DbContext, IEntityContext
     {
+        public virtual DbSet<DataSnapshot> DataSnapshots { get; set; }
         public virtual DbSet<EventLog> EventLogs { get; set; }
         public virtual DbSet<MetaAccount> MetaAccounts { get; set; }
         public virtual DbSet<MetaConnection> MetaConnections { get; set; }
