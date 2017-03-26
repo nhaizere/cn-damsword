@@ -5,7 +5,7 @@ namespace DamSword.Data.Repositories
 {
     public interface IMetaDataSnapshotRepository : IEntityRepository<MetaDataSnapshot>
     {
-        MetaDataSnapshot GetOrFetchDataSnapshot(long providerId, long personId, DateTime date, int snapshotType);
+        MetaDataSnapshot GetOrFetchDataSnapshot(long providerId, long personId, string accountId, DateTime date, int snapshotType);
     }
 
     public class MetaDataSnapshotRepository : EntityRepositoryBase<MetaDataSnapshot>, IMetaDataSnapshotRepository
@@ -15,10 +15,10 @@ namespace DamSword.Data.Repositories
         {
         }
 
-        public MetaDataSnapshot GetOrFetchDataSnapshot(long providerId, long personId, DateTime date, int snapshotType)
+        public MetaDataSnapshot GetOrFetchDataSnapshot(long providerId, long personId, string accountId, DateTime date, int snapshotType)
         {
             var snapshotDate = date.Date;
-            var snapshot = FirstOrDefault(s => s.ProviderId == providerId && s.PersonId == personId && s.Date == snapshotDate && s.SnapshotType == snapshotType);
+            var snapshot = FirstOrDefault(s => s.ProviderId == providerId && s.PersonId == personId && s.AccountId == accountId && s.Date == snapshotDate && s.SnapshotType == snapshotType);
             if (snapshot != null)
                 return snapshot;
 
@@ -26,6 +26,7 @@ namespace DamSword.Data.Repositories
             {
                 PersonId = personId,
                 ProviderId = providerId,
+                AccountId = accountId,
                 Date = snapshotDate,
                 SnapshotType = snapshotType
             };
