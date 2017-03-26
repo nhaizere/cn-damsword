@@ -6,6 +6,9 @@ namespace DamSword.Data.Entities
 {
     public class WebResource : EntityBase
     {
+        [Required]
+        public string Uuid { get; set; }
+
         [Required, StringLength(255)]
         public string Name { get; set; }
 

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
+using DamSword.Watch;
 using DamSword.Web.Models.Migration;
 using DamSword.Web.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +55,12 @@ namespace DamSword.Web.Controllers
                 PasswordHash = PasswordUtils.CreateHash(model.Password),
                 Permissions = UserPermissions.Owner
             });
+
+            var watchServices = ServiceLocator.Resolve<IEnumerable<IWatchService>>();
+            foreach (var watchService in watchServices)
+            {
+                watchService.EnsureRegistered();
+            }
 
             _unitOfWork.Commit();
 
