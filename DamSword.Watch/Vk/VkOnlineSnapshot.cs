@@ -9,6 +9,7 @@ namespace DamSword.Watch.Vk
         public OnlineType Type { get; set; }
         public string ApplicationId { get; set; }
         public DateTime? LastActivity { get; set; }
-        public string LastActivityPlatform { get; set; }
+        public int? LastActivityPlatformId { get; set; }
+        public PlatformType? LastActivityPlatformType { get; set; }
     }
 }

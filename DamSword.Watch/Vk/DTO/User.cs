@@ -242,7 +242,7 @@ namespace DamSword.Watch.Vk.DTO
         public SexType SexType => EnumExtensions.FromUnderlyingType(SexId, SexType.Unknown);
         public RelationshipStatus RelationshipStatus => EnumExtensions.FromUnderlyingType(RelationshipStatusId, RelationshipStatus.Unknown);
 
-        public OnlineType ResolveOnlineType
+        public OnlineType OnlineType
         {
             get
             {

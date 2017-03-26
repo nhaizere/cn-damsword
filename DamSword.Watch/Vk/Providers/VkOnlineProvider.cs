@@ -31,14 +31,15 @@ namespace DamSword.Watch.Vk.Providers
                 var result = response?.Response;
 
                 var snapshots = result
-                    .GroupBy(p => $"id{p.Id}")
+                    .GroupBy(p => p.AccountReference)
                     .ToDictionary(g => g.Key, g => (IEnumerable<VkOnlineSnapshot>)g.Select(p => new VkOnlineSnapshot
                     {
                         Time = DateTime.Now,
                         Type = p.OnlineType,
                         ApplicationId = p.OnlineApplication,
                         LastActivity = p.LastSeen?.Time,
-                        LastActivityPlatform = p.LastSeen?.PlatformId
+                        LastActivityPlatformId = p.LastSeen?.PlatformId,
+                        LastActivityPlatformType = p.LastSeen?.PlatformType
                     }).ToArray());
 
                 return snapshots;
