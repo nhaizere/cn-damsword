@@ -5,7 +5,7 @@ namespace DamSword.Data.Repositories
 {
     public interface IDataSnapshotRepository : IEntityRepository<DataSnapshot>
     {
-        DataSnapshot GetDataSnapshot(long webResourceId, long personId, DateTime date, int type);
+        DataSnapshot GetOrFetchDataSnapshot(long webResourceId, long personId, DateTime date, int type);
     }
 
     public class DataSnapshotRepository : EntityRepositoryBase<DataSnapshot>, IDataSnapshotRepository
@@ -15,9 +15,20 @@ namespace DamSword.Data.Repositories
         {
         }
 
-        public DataSnapshot GetDataSnapshot(long webResourceId, long personId, DateTime date, int type)
+        public DataSnapshot GetOrFetchDataSnapshot(long webResourceId, long personId, DateTime date, int type)
         {
-            return FirstOrDefault(s => s.WebResourceId == webResourceId && s.PersonId == personId && s.Date == date.Date && s.Type == type);
+            var snapshotDate = date.Date;
+            var snapshot = FirstOrDefault(s => s.WebResourceId == webResourceId && s.PersonId == personId && s.Date == snapshotDate && s.Type == type);
+            if (snapshot != null)
+                return snapshot;
+
+            return new DataSnapshot
+            {
+                Date = snapshotDate,
+                PersonId = personId,
+                WebResourceId = webResourceId,
+                Type = type
+            };
         }
     }
 }
