@@ -1,22 +1,17 @@
-﻿using System;
-using DamSword.Common;
-using DamSword.Data.Repositories;
-using DamSword.Services;
+﻿using DamSword.Common;
 using DamSword.Web.Models.Account;
-using Microsoft.AspNetCore.Http;
+using DamSword.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DamSword.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ISessionService _sessionService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AccountController(IUserRepository userRepository, ISessionService sessionService)
+        public AccountController(IAuthenticationService authenticationService)
         {
-            _userRepository = userRepository;
-            _sessionService = sessionService;
+            _authenticationService = authenticationService;
         }
 
         [HttpGet]
@@ -28,6 +23,7 @@ namespace DamSword.Web.Controllers
 
             return View("~/Views/Account/Login.cshtml", new LoginViewModel
             {
+                InvalidCredentials = false,
                 ReturnUrl = returnUrl
             });
         }
@@ -35,17 +31,15 @@ namespace DamSword.Web.Controllers
         [HttpPost]
         public ActionResult Login(LoginSaveModel model)
         {
-            var passwordHash = PasswordUtils.CreateHash(model.Password);
-            var userId = _userRepository.FirstOrDefault(u => u.Login == model.Login && u.PasswordHash == passwordHash, u => u.Id);
-            if (userId == 0)
-                return RedirectToAction("Login", new { returnUrl = model.ReturnUrl });
-
-            var remoteIpAddress = HttpContext.GetRemoteIpAddress();
-            var session = _sessionService.CreateSession(userId, remoteIpAddress, model.Persistent);
-            Response.Cookies.Append("session", session.Hash, new CookieOptions
+            var isLoggedIn = _authenticationService.TryLogIn(model.Login, model.Password, model.Persistent, HttpContext);
+            if (!isLoggedIn)
             {
-                Expires = new DateTimeOffset(session.ExpirationTime)
-            });
+                return View("~/Views/Account/Login.cshtml", new LoginViewModel
+                {
+                    InvalidCredentials = true,
+                    ReturnUrl = model.ReturnUrl
+                });
+            }
 
             return Redirect(model.ReturnUrl ?? "/");
         }

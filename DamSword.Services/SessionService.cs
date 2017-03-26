@@ -15,8 +15,8 @@ namespace DamSword.Services
 
     public interface ISessionService
     {
-        void ExtendSession(int id, TimeSpan time);
-        void RemoveSession(int id);
+        void ExtendSession(long id, TimeSpan time);
+        void RemoveSession(long id);
         SessionInfo GetSession(string hash, string remoteIpAddress);
         SessionInfo CreateSession(long userId, string remoteIpAddress, bool persistent);
     }
@@ -27,7 +27,7 @@ namespace DamSword.Services
         public IUserRepository UserRepository { get; set; }
         public IUnitOfWork UnitOfWork { get; set; }
 
-        public void ExtendSession(int id, TimeSpan time)
+        public void ExtendSession(long id, TimeSpan time)
         {
             var session = SessionRepository.GetById(id);
             session.ExpirationTime += time;
@@ -36,7 +36,7 @@ namespace DamSword.Services
             UnitOfWork.Commit();
         }
 
-        public void RemoveSession(int id)
+        public void RemoveSession(long id)
         {
             var session = SessionRepository.GetById(id);
             session.ExpirationTime = DateTime.UtcNow;
