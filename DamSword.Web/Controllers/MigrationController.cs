@@ -53,6 +53,7 @@ namespace DamSword.Web.Controllers
                 Alias = model.Alias,
                 Login = model.Login,
                 PasswordHash = PasswordUtils.CreateHash(model.Password),
+                HierarcyLevel = 0,
                 Permissions = UserPermissions.Owner
             });
 

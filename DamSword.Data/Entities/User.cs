@@ -13,6 +13,7 @@ namespace DamSword.Data.Entities
         [Required]
         public string PasswordHash { get; set; }
 
+        public int HierarcyLevel { get; set; }
         public UserPermissions Permissions { get; set; }
 
         public long? PersonId { get; set; }
