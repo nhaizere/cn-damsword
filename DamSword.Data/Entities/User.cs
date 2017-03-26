@@ -12,7 +12,9 @@ namespace DamSword.Data.Entities
 
         [Required]
         public string PasswordHash { get; set; }
-        
+
+        public UserPermissions Permissions { get; set; }
+
         public long? PersonId { get; set; }
         public virtual Person Person { get; set; }
     }
