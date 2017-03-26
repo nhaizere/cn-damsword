@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DamSword.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -9,6 +10,9 @@ namespace DamSword.Data
 {
     public class EntityContext : DbContext, IEntityContext
     {
+        private static readonly MethodInfo GetPropertyValueGenericMethodInfo = typeof(PropertyValues).GetMethods(BindingFlags.Instance | BindingFlags.Public)
+            .Single(m => m.IsGenericMethod && m.Name == "GetValue" && m.GetParameters()[0].ParameterType == typeof(IProperty));
+
         public virtual DbSet<MetaDataSnapshot> MetaDataSnapshots { get; set; }
         public virtual DbSet<EventLog> EventLogs { get; set; }
         public virtual DbSet<MetaAccount> MetaAccounts { get; set; }
@@ -108,8 +112,9 @@ namespace DamSword.Data
         {
             foreach (var property in entry.CurrentValues.Properties)
             {
-                var originalValue = entry.OriginalValues.GetValue<object>(property);
-                var currentValue = entry.CurrentValues.GetValue<object>(property);
+                var getValueMethod = GetPropertyValueGenericMethodInfo.MakeGenericMethod(property.ClrType);
+                var originalValue = getValueMethod.Invoke(entry.OriginalValues, new object[] { property });
+                var currentValue = getValueMethod.Invoke(entry.CurrentValues, new object[] { property });
 
                 if (originalValue?.Equals(currentValue) == true)
                 {
