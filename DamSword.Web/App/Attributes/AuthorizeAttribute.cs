@@ -30,9 +30,8 @@ namespace DamSword.Web.Attributes
         {
             if (Require == UserPermissions.None || UserScope.Current?.User.Permissions == UserPermissions.Owner)
                 return true;
-
-            var currentPermissions = UserScope.Current?.User.Permissions ?? UserPermissions.None;
-            return (currentPermissions & Require) == Require;
+            
+            return Permissions.Has(Require);
         }
     }
 }
