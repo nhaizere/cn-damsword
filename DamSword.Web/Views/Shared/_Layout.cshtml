@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <title>@ViewBag.Title</title>
+    <title>@ViewBag.Title | SoD</title>
     
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
@@ -44,6 +44,7 @@
     }
 
     <div class="container-fluid">
+        <h4 id="title-header" class="visible-xs">@ViewBag.Title</h4>
         @RenderBody()
     </div>
 </body>

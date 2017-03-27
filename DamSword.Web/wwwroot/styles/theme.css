@@ -1,3 +1,7 @@
+body {
+    padding-top: 70px;
+}
+
 #brand-logo #brand-logo-image {
     min-width: 32px;
     margin-top: -9px;
@@ -12,4 +16,8 @@
 
 #brand-logo:hover #brand-logo-image {
     opacity: 0.73;
+}
+
+#title-header {
+    margin-top: 0;
 }
