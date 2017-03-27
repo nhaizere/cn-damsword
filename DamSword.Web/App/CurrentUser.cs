@@ -7,12 +7,12 @@ namespace DamSword.Web
         public static User User => UserScope.Current.User ?? new User
         {
             Alias = "Anonymous",
-            HierarcyLevel = int.MaxValue,
+            HierarchyLevel = int.MaxValue,
             Permissions = UserPermissions.None
         };
 
         public static bool IsAnonymous => User.Id == 0;
         public static long Id => User.Id;
-        public static int Hierarchy => User.HierarcyLevel;
+        public static int Hierarchy => User.HierarchyLevel;
     }
 }
