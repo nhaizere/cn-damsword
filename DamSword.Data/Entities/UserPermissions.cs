@@ -5,6 +5,7 @@ namespace DamSword.Data.Entities
     [Flags]
     public enum UserPermissions : long
     {
+        None = 0,
         ViewUsers = 1 << 0,
         ManageUsers = 1 << 1,
         ViewPersons = 1 << 10,
