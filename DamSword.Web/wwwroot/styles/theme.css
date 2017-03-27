@@ -1,0 +1,10 @@
+#brand-logo #brand-logo-image {
+    min-width: 32px;
+    margin-top: -9px;
+    margin-right: 2px;
+    display: inline;
+}
+
+#brand-logo:hover #brand-logo-image {
+    opacity: 0.83;
+}
