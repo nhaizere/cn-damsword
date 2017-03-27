@@ -32,7 +32,7 @@
     <script src="/lib/bootstrap-validator-0.11.9/js/validator.js"></script>
 </head>
 <body>
-    @if (UserScope.Current?.User != null)
+    @if (!CurrentUser.IsAnonymous)
     {
         @await Component.InvokeAsync("Navigation")
     }
