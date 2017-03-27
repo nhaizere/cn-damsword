@@ -20,6 +20,8 @@ namespace DamSword.Web.Attributes
                 // TODO: encode return URL
                 var returnUrlEncoded = returnUrl == "/" ? string.Empty : context.HttpContext.Request.GetUri().PathAndQuery;
                 context.Result = new RedirectResult($"/account/login{(returnUrlEncoded.IsEmpty() ? string.Empty : $"?returnUrl={returnUrlEncoded}")}");
+
+                return;
             }
 
             if (!HasPermissions())
