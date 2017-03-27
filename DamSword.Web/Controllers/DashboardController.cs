@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace DamSword.Web.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class DashboardController : Controller
     {
         [HttpGet]
-        public IActionResult Dashboard()
+        public IActionResult Details()
         {
-            return View("~/Views/Home/Dashboard.cshtml");
+            return View("~/Views/Dashboard/Details.cshtml");
         }
 
         [HttpPost]
-        public IActionResult Dashboard(string test)
+        public IActionResult Details(string test)
         {
             Person person;
             if (ServiceLocator.Resolve<IPersonRepository>().Count() == 0)
@@ -55,7 +55,7 @@ namespace DamSword.Web.Controllers
             }
 
             ServiceLocator.Resolve<IWatchService>().FetchOnline(new[] { person.Id });
-            return View("~/Views/Home/Dashboard.cshtml");
+            return View("~/Views/Dashboard/Details.cshtml");
         }
     }
 }

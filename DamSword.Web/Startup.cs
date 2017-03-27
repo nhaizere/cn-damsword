@@ -77,7 +77,7 @@ namespace DamSword.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Dashboard}/{id?}");
+                    template: "{controller=Dashboard}/{action=Details}/{id?}");
             });
 
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
