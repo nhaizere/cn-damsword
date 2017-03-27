@@ -6,9 +6,10 @@
 }
 
 #brand-logo #brand-logo-image {
-    opacity: 0.83;
+    opacity: 1.0;
+    
 }
 
 #brand-logo:hover #brand-logo-image {
-    opacity: 1.0;
+    opacity: 0.73;
 }
