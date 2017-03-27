@@ -1,0 +1,84 @@
+﻿@using DamSword.Data.Entities
+@model DamSword.Web.Models.User.ListModel
+@{
+    ViewBag.Title = "User List";
+    var canManage = Permissions.Has(UserPermissions.ManageUsers);
+}
+
+<form action="/user/list" method="get">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-9 hidden-xs"></div>
+            <div class="col-sm-3 col-xs-12">
+                <div class="input-group">
+                    <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Search..." autofocus />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="list-group hidden-xs">
+    <table id="users-table" class="table table-hover text-center" data-toggle="table"
+               data-height="460"
+               data-ajax="ajaxRequest"
+               data-search="true"
+               data-side-pagination="server"
+               data-pagination="true">
+        <thead>
+        <tr class="text-center">
+            <td>Id</td>
+            <td>Alias</td>
+            @if (canManage)
+            {
+                <td>Login</td>
+                <td>Hierarchy</td>
+                <td>Permissions</td>
+                <td width="148px">Actions</td>
+            }
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Alias</td>
+                    @if (canManage)
+                    {
+                        <td>@user.Login</td>
+                        <td>@user.HierarchyLevel</td>
+                        <td>@user.Permissions</td>
+                        <td>
+                            <a href="/user/details/@user.Id" role="button" class="btn btn-default btn-xs" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </a>
+                            <button type="button" class="btn btn-danger btn-xs" aria-label="Left Align" data-ajax-action="/user/delete/@user.Id" data-ajax-method="delete">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="list-group visible-xs">
+    @foreach (var user in Model.Users)
+    {
+        <a href="/users/details/@user.Id" class="list-group-item list-group-item-action clearfix">
+            <span class="text-center">
+                @user.Alias@(canManage ? Html.Raw($" <strong>L:{user.Login} H:{user.HierarchyLevel}</strong>") : null)
+            </span>
+            <span class="pull-right">
+                <span class="btn btn-danger btn-sm" data-ajax-action="/user/delete/@user.Id" data-ajax-method="delete">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </span>
+            </span>
+        </a>
+    }
+</div>
