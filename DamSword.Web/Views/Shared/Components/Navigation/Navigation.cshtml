@@ -13,7 +13,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Dashboard</a></li>
+                <li><a href="/">Dashboard</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -27,3 +27,20 @@
         </div>
     </div>
 </nav>
+
+<script>
+    $(function () {
+        var trimRegex = /^\/|\/$/g;
+        var location = document.location.pathname.trim().replace(trimRegex, '').toLowerCase();
+        var $active = $('.navbar li:has(a)').filter(function () {
+            var currentHref = $(this).children('a').attr('href');
+            if (currentHref === undefined)
+                return false;
+
+            var href = (currentHref || '').trim().replace(trimRegex, '').toLowerCase();
+            return href === location;
+        });
+
+        $active.addClass('active');
+    });
+</script>
