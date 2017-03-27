@@ -5,6 +5,10 @@
     display: inline;
 }
 
-#brand-logo:hover #brand-logo-image {
+#brand-logo #brand-logo-image {
     opacity: 0.83;
+}
+
+#brand-logo:hover #brand-logo-image {
+    opacity: 1.0;
 }
