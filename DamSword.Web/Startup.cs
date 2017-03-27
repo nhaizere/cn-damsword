@@ -64,7 +64,9 @@ namespace DamSword.Web
             ConfigureScopeContainer(app, contextAccessor);
             ConfigureScopes(app);
             ConfigureDatabase(app, HostingEnvironment);
-            
+
+            app.UseStatusCodePagesWithReExecute("/Error/Details/{0}");
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = ctx =>
