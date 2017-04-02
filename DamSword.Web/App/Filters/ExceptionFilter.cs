@@ -11,7 +11,7 @@ namespace DamSword.Web.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            if (CommonAppConfig.IsDebug)
+            if (CommonAppConfig.IsDebug || context.HttpContext.Request.IsAjaxRequest())
                 return;
 
             var result = new ViewResult

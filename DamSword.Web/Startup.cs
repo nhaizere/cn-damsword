@@ -45,7 +45,11 @@ namespace DamSword.Web
             services.AddDbContext<EntityContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString(AppConfig.EntityContextConnectionStringName), contextOptions => contextOptions.MigrationsAssembly("DamSword.Web")));
 
-            services.AddMvc(options => options.Filters.Add(new ExceptionFilter()));
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ExceptionFilter());
+                options.Filters.Add(new AjaxExceptionFilter());
+            });
             
             var builder = new ContainerBuilder();
             DependenciesConfig.Configure(builder, !HostingEnvironment.IsDevelopment());
