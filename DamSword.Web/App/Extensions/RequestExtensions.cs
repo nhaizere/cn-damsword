@@ -1,4 +1,5 @@
-﻿using DamSword.Common;
+﻿using System;
+using DamSword.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace DamSword.Web
@@ -11,6 +12,17 @@ namespace DamSword.Web
             return forwardedIpAddress.IsNullOrEmpty()
                 ? self.Connection.RemoteIpAddress.ToString()
                 : forwardedIpAddress.Split(',')[0];
+        }
+
+        public static bool IsAjaxRequest(this HttpRequest self)
+        {
+            if (self == null)
+                throw new ArgumentNullException(nameof(self));
+            
+            if (self.Headers != null)
+                return self.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+            return false;
         }
     }
 }
