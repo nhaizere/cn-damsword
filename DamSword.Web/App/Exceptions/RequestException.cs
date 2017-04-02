@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Net;
 
 namespace DamSword.Web.Exceptions
 {
     public class RequestException : Exception
     {
-        public int StatusCode { get; }
+        public HttpStatusCode StatusCode { get; }
 
-        public RequestException(int statusCode, string message = null)
+        public RequestException(HttpStatusCode statusCode, string message = null)
             : base(message)
         {
             StatusCode = statusCode;

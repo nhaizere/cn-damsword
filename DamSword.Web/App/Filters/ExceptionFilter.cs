@@ -21,7 +21,7 @@ namespace DamSword.Web.Filters
                 {
                     Model = new Models.Error.DetailsModel
                     {
-                        StatusCode = (context.Exception as RequestException)?.StatusCode ?? 500,
+                        StatusCode = (int?)(context.Exception as RequestException)?.StatusCode ?? 500,
                         Exception = context.Exception
                     }
                 }
