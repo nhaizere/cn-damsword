@@ -44,7 +44,11 @@
     }
 
     <div class="container-fluid">
-        <h4 id="title-header" class="visible-xs">@ViewBag.Title</h4>
+        @if (ViewBag.HideTitleHeader != true)
+        {
+            <h4 id="title-header" class="visible-xs">@ViewBag.Title</h4>
+        }
+
         @RenderBody()
     </div>
 </body>

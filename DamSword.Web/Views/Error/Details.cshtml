@@ -1,6 +1,7 @@
 ﻿@model DamSword.Web.Models.Error.DetailsModel
 @{
     ViewBag.Title = $"Error {Model.StatusCode}";
+    ViewBag.HideTitleHeader = true;
 }
 
 <style>
@@ -27,16 +28,16 @@
     <div class="col-md-12">
         <div class="error-template">
             <h1>
-                Oops!
+                Error occured!
             </h1>
             <h2>
-                @Model.StatusCode
+                @Model.StatusCode @Model.StatusCodeMessage
             </h2>
             @if (Model.Exception != null)
             {
-                <div class="error-details">
+                <strong class="error-details">
                     @Model.Exception.Message
-                </div>
+                </strong>
             }
             <div class="error-actions">
                 <a href="/" class="btn btn-primary btn-lg">
