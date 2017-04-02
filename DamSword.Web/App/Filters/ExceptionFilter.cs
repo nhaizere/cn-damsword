@@ -1,4 +1,5 @@
 ﻿using DamSword.Common;
+using DamSword.Web.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -16,11 +17,11 @@ namespace DamSword.Web.Filters
             var result = new ViewResult
             {
                 ViewName = "~/Views/Error/Details.cshtml",
-                ViewData= new ViewDataDictionary<Models.Error.DetailsModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                ViewData = new ViewDataDictionary<Models.Error.DetailsModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
                     Model = new Models.Error.DetailsModel
                     {
-                        StatusCode = 500,
+                        StatusCode = (context.Exception as RequestException)?.StatusCode ?? 500,
                         Exception = context.Exception
                     }
                 }

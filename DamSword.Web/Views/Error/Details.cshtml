@@ -32,9 +32,12 @@
             <h2>
                 @Model.StatusCode
             </h2>
-            <div class="error-details">
-                Sorry, an error has occured, Requested page not found!
-            </div>
+            @if (Model.Exception != null)
+            {
+                <div class="error-details">
+                    @Model.Exception.Message
+                </div>
+            }
             <div class="error-actions">
                 <a href="/" class="btn btn-primary btn-lg">
                     <span class="glyphicon glyphicon-home"></span>
