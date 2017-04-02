@@ -10,7 +10,7 @@ namespace DamSword.Web.TagHelpers
         public bool IsActive { get; set; }
     }
 
-    [HtmlTargetElement("a", Attributes = "href", ParentTag = "li")]
+    [HtmlTargetElement("a", ParentTag = "li")]
     public class NavigationAnchorTagHelper : TagHelper
     {
         private readonly IHttpContextAccessor _contextAccessor;

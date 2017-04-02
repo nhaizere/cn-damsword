@@ -7,20 +7,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" id="brand-logo" href="/"><img id="brand-logo-image" src="/favicon-32x32.png" /> Sword of Damocles</a>
+            <a asp-controller="Dashboard" asp-action="Details" class="navbar-brand" id="brand-logo"><img id="brand-logo-image" src="/favicon-32x32.png" /> Sword of Damocles</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li bs-navigation="true"><a href="/" bs-navigation="true">Dashboard</a></li>
-                <li bs-navigation="true"><a href="/user/list" bs-navigation="true">User List</a></li>
+                <li bs-navigation="true"><a asp-controller="Dashboard" asp-action="Details" bs-navigation="true">Dashboard</a></li>
+                <li bs-navigation="true"><a asp-controller="User" asp-action="List" bs-navigation="true">User List</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@CurrentUser.User.Alias <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="/account/settings">Settings</a></li>
-                        <li><a href="/account/logout">Exit</a></li>
+                        <li><a asp-controller="Account" asp-action="">Settings</a></li>
+                        <li><a asp-controller="Account" asp-action="Logout" >Exit</a></li>
                     </ul>
                 </li>
             </ul>
