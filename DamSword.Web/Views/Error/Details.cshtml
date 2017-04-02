@@ -1,6 +1,6 @@
-﻿@model string
+﻿@model DamSword.Web.Models.Error.DetailsModel
 @{
-    ViewBag.Title = $"Error {Model}";
+    ViewBag.Title = $"Error {Model.StatusCode}";
 }
 
 <style>
@@ -30,7 +30,7 @@
                 Oops!
             </h1>
             <h2>
-                @Model
+                @Model.StatusCode
             </h2>
             <div class="error-details">
                 Sorry, an error has occured, Requested page not found!

@@ -6,6 +6,7 @@ using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
 using DamSword.Services;
+using DamSword.Web.Filters;
 using DamSword.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,7 +45,7 @@ namespace DamSword.Web
             services.AddDbContext<EntityContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString(AppConfig.EntityContextConnectionStringName), contextOptions => contextOptions.MigrationsAssembly("DamSword.Web")));
 
-            services.AddMvc();
+            services.AddMvc(options => options.Filters.Add(new ExceptionFilter()));
             
             var builder = new ContainerBuilder();
             DependenciesConfig.Configure(builder, !HostingEnvironment.IsDevelopment());

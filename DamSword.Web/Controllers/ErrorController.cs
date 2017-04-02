@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DamSword.Web.Models.Error;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DamSword.Web.Controllers
 {
@@ -6,8 +7,11 @@ namespace DamSword.Web.Controllers
     {
         public IActionResult Details(int id)
         {
-            var error = $"{id}";
-            return View("~/Views/Error/Details.cshtml", error);
+            return View("~/Views/Error/Details.cshtml", new DetailsModel
+            {
+                StatusCode = id,
+                Exception = null
+            });
         }
     }
 }
