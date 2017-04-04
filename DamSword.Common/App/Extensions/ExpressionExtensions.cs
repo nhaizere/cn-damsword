@@ -81,10 +81,11 @@ namespace DamSword.Common
             return expression as LambdaExpression;
         }
 
-        public static bool IsMemberOfParameter(this MemberExpression expression, ParameterExpression parameterExpression)
+        public static bool IsMemberOfParameter(this Expression expression, ParameterExpression parameterExpression)
         {
+            var memberExpression = expression.AsMemberExpressionSkipConvert();
             var checkVisitor = new IsMemberOfParameterExpressionVisitor(parameterExpression);
-            checkVisitor.Visit(expression);
+            checkVisitor.Visit(memberExpression);
 
             return checkVisitor.Result;
         }
