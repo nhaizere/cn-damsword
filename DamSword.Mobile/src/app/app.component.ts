@@ -14,15 +14,8 @@ export class MyApp {
 
     rootPage: any = Dashboard;
 
-    pages: Array<{ title: string, component: any }>;
-
     constructor(public platform: Platform) {
         this.initializeApp();
-
-        this.pages = [
-            { title: 'Dashboard', component: Dashboard }
-        ];
-
     }
 
     initializeApp() {
@@ -30,6 +23,12 @@ export class MyApp {
             StatusBar.styleBlackOpaque();
             Splashscreen.hide();
         });
+    }
+
+    getPages(): Array<{ title: string, component: any }> {
+        return [
+            { title: 'Dashboard', component: Dashboard }
+        ];
     }
 
     openPage(page) {
