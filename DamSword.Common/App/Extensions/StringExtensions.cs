@@ -65,6 +65,11 @@ namespace DamSword.Common
             return parts;
         }
 
+        public static string SplitUpperCaseBySpace(this string self)
+        {
+            return self.SplitUpperCase().Join(" ");
+        }
+
         public static string ToCamelCase(this string self)
         {
             var parts = self.SplitUpperCase();
