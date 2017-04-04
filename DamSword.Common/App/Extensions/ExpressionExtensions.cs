@@ -335,6 +335,14 @@ namespace DamSword.Common
             return self.ReplaceMethodCallArgument((a, i) => true, argument);
         }
 
+        public static IEnumerable<Expression> Query(this Expression self, Func<Expression, bool> predicate)
+        {
+            var queryVisitor = new QueryExpressionVisitor(predicate);
+            queryVisitor.Visit(self);
+
+            return queryVisitor.Expressions;
+        }
+
         public static bool HasLinqToObjectsCall(this Expression self)
         {
             var visitor = new LinqToObjectsVisitor();
@@ -460,6 +468,31 @@ namespace DamSword.Common
                     return node;
 
                 return base.VisitMemberInit(node);
+            }
+        }
+
+        private class QueryExpressionVisitor : ExpressionVisitor
+        {
+            public IEnumerable<Expression> Expressions => _expressions.AsReadOnly();
+
+            private readonly Func<Expression, bool> _predicate;
+            private readonly List<Expression> _expressions;
+
+            public QueryExpressionVisitor(Func<Expression, bool> predicate)
+            {
+                _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
+                _expressions = new List<Expression>();
+            }
+
+            public override Expression Visit(Expression node)
+            {
+                if (_predicate(node))
+                {
+                    _expressions.Add(node);
+                    return null;
+                }
+
+                return base.Visit(node);
             }
         }
     }
