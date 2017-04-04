@@ -488,10 +488,7 @@ namespace DamSword.Common
             public override Expression Visit(Expression node)
             {
                 if (_predicate(node))
-                {
                     _expressions.Add(node);
-                    return null;
-                }
 
                 return base.Visit(node);
             }
