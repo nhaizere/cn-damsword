@@ -1,12 +1,13 @@
 ﻿using DamSword.Data;
+using DamSword.Data.Entities;
 
 namespace DamSword.Web.Services
 {
-    public class CurrentUserIdService : ICurrentUserIdService
+    public class CurrentUserProvider : ICurrentUserProvider
     {
-        public long? GetCurrentUserId()
+        public User GetCurrentUser()
         {
-            return UserScope.Current.User?.Id;
+            return UserScope.Current.User;
         }
     }
 }

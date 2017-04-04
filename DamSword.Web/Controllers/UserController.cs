@@ -16,10 +16,10 @@ namespace DamSword.Web.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet, Authorize(Require = UserPermissions.ViewUsers)]
+        [HttpGet, Require(UserPermissions.ViewUsers)]
         public IActionResult List(string search)
         {
-            var canManage = Permissions.Has(UserPermissions.ManageUsers);
+            var canManage = CurrentPermissions.Has(UserPermissions.ManageUsers);
             search = search?.ToLower() ?? string.Empty;
 
             var users = _userRepository.Select(u => u.Id == CurrentUser.Id || u.HierarchyLevel > CurrentUser.Hierarchy,

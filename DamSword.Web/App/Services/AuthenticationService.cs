@@ -1,7 +1,7 @@
 ﻿using System;
 using DamSword.Common;
 using DamSword.Data.Repositories;
-using DamSword.Services;
+using DamSword.Services.Entity;
 using Microsoft.AspNetCore.Http;
 
 namespace DamSword.Web.Services

@@ -2,7 +2,7 @@
 
 namespace DamSword.Web
 {
-    public static class Permissions
+    public static class CurrentPermissions
     {
         public static bool Has(UserPermissions permissions)
         {

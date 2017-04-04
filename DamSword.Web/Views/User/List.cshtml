@@ -2,7 +2,7 @@
 @model DamSword.Web.Models.User.ListModel
 @{
     ViewBag.Title = "User List";
-    var canManage = Permissions.Has(UserPermissions.ManageUsers);
+    var canManage = CurrentPermissions.Has(UserPermissions.ManageUsers);
 }
 
 <form action="/user/list" method="get">

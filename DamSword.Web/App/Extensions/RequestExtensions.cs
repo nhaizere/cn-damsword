@@ -1,19 +1,12 @@
 ﻿using System;
-using DamSword.Common;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace DamSword.Web
 {
     public static class RequestExtensions
     {
-        public static string GetRemoteIpAddress(this HttpContext self)
-        {
-            var forwardedIpAddress = self.Request.Headers["HTTP_X_FORWARDED_FOR"].ToString();
-            return forwardedIpAddress.IsNullOrEmpty()
-                ? self.Connection.RemoteIpAddress.ToString()
-                : forwardedIpAddress.Split(',')[0];
-        }
-
         public static bool IsAjaxRequest(this HttpRequest self)
         {
             if (self == null)
@@ -23,6 +16,23 @@ namespace DamSword.Web
                 return self.Headers["X-Requested-With"] == "XMLHttpRequest";
 
             return false;
+        }
+
+        public static bool IsJsonRequest(this HttpRequest self)
+        {
+            if (self == null)
+                throw new ArgumentNullException(nameof(self));
+
+            return self.Headers["Accept"].Contains("application/json");
+        }
+
+        public static bool IsApiRequest(this HttpRequest self)
+        {
+            if (self == null)
+                throw new ArgumentNullException(nameof(self));
+
+            var path = self.GetUri().LocalPath;
+            return path.StartsWith("/api/");
         }
     }
 }

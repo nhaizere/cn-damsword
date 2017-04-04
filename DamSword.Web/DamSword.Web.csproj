@@ -31,6 +31,7 @@
     <ProjectReference Include="..\DamSword.Data\DamSword.Data.csproj" />
     <ProjectReference Include="..\DamSword.Services\DamSword.Services.csproj" />
     <ProjectReference Include="..\DamSword.Watch\DamSword.Watch.csproj" />
+    <ProjectReference Include="..\DamSword.Web.DTO\DamSword.Web.DTO.csproj" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />

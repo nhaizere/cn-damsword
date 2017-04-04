@@ -46,7 +46,7 @@ namespace DamSword.Data.Repositories
     public abstract class EntityRepositoryBase<TEntity> : IEntityRepository<TEntity>
         where TEntity : class, IEntity
     {
-        public ICurrentUserIdService CurrentUserIdService { get; set; }
+        public ICurrentUserProvider CurrentUserProvider { get; set; }
 
         private readonly IEntityContext _entityContext;
         protected readonly IQueryable<TEntity> Query;
@@ -59,13 +59,14 @@ namespace DamSword.Data.Repositories
 
         public void Save(TEntity entity)
         {
+            var currentUserId = entity.ModifiedByUserId = CurrentUserProvider.GetCurrentUser()?.Id;
             entity.ModifiedAt = DateTime.UtcNow;
-            entity.ModifiedByUserId = CurrentUserIdService.GetCurrentUserId();
+            entity.ModifiedByUserId = currentUserId;
 
             if (entity.IsNew())
             {
                 entity.CreatedAt = DateTime.UtcNow;
-                entity.CreatedByUserId = CurrentUserIdService.GetCurrentUserId();
+                entity.CreatedByUserId = currentUserId;
                 _entityContext.Add(entity);
             }
             else

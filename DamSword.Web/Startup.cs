@@ -5,7 +5,7 @@ using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
-using DamSword.Services;
+using DamSword.Services.Entity;
 using DamSword.Web.Filters;
 using DamSword.Web.Services;
 using Microsoft.AspNetCore.Builder;

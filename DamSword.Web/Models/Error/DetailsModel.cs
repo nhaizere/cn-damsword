@@ -17,7 +17,7 @@ namespace DamSword.Web.Models.Error
                     return "Unknown Error";
 
                 var httpStatusCode = (HttpStatusCode)StatusCode;
-                return httpStatusCode.ToString().SplitUpperCase().Join(" ");
+                return httpStatusCode.ToString().SplitUpperCaseBySpace();
             }
         }
     }

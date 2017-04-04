@@ -1,10 +1,9 @@
 ﻿using System;
-using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
 
-namespace DamSword.Services
+namespace DamSword.Services.Entity
 {
     public class SessionInfo
     {
@@ -14,7 +13,7 @@ namespace DamSword.Services
         public DateTime ExpirationTime { get; set; }
     }
 
-    public interface ISessionService : IService
+    public interface ISessionService : IEntityService<Session>
     {
         void ExtendSession(long id, TimeSpan time);
         void RemoveSession(long id);
@@ -28,12 +27,22 @@ namespace DamSword.Services
         public IUserRepository UserRepository { get; set; }
         public IUnitOfWork UnitOfWork { get; set; }
 
+        public void Save(Session entity)
+        {
+            SessionRepository.Save(entity);
+        }
+
+        public void Delete(long id)
+        {
+            SessionRepository.Delete(id);
+        }
+
         public void ExtendSession(long id, TimeSpan time)
         {
             var session = SessionRepository.GetById(id);
             session.ExpirationTime += time;
 
-            SessionRepository.Save(session);
+            Save(session);
             UnitOfWork.Commit();
         }
 
@@ -42,7 +51,7 @@ namespace DamSword.Services
             var session = SessionRepository.GetById(id);
             session.ExpirationTime = DateTime.UtcNow;
 
-            SessionRepository.Save(session);
+            Save(session);
             UnitOfWork.Commit();
         }
 
@@ -72,7 +81,7 @@ namespace DamSword.Services
                 ExpirationTime = persistent ? now.AddMonths(1) : now.AddDays(1)
             };
 
-            SessionRepository.Save(session);
+            Save(session);
             UnitOfWork.Commit();
 
             return new SessionInfo
