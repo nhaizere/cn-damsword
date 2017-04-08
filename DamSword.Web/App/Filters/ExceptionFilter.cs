@@ -80,6 +80,8 @@ namespace DamSword.Web.Filters
             {
                 case UnauthorizedAccessException e:
                     return (int)HttpStatusCode.Unauthorized;
+                case ArgumentException e:
+                    return (int)HttpStatusCode.BadRequest;
                 case RequestException e:
                     return (int)e.StatusCode;
                 default:
