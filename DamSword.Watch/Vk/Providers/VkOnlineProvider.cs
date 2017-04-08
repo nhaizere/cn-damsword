@@ -10,12 +10,15 @@ namespace DamSword.Watch.Vk.Providers
 {
     public interface IVkOnlineProvider : IService
     {
+        string Version { get; }
         Task<Dictionary<string, IEnumerable<VkOnlineSnapshot>>> FetchOnlineSnapshots(IEnumerable<string> references);
     }
 
     public class VkOnlineProvider : IVkOnlineProvider
     {
         private const string FetchOnlineUrl = "https://api.vk.com/method/getProfiles?domains={0}&fields=online,last_seen";
+
+        public string Version => "A1336E64-DDE9-426D-AA1D-063AA77367D3";
 
         public Task<Dictionary<string, IEnumerable<VkOnlineSnapshot>>> FetchOnlineSnapshots(IEnumerable<string> references)
         {
@@ -34,6 +37,7 @@ namespace DamSword.Watch.Vk.Providers
                     .GroupBy(p => p.AccountReference)
                     .ToDictionary(g => g.Key, g => (IEnumerable<VkOnlineSnapshot>)g.Select(p => new VkOnlineSnapshot
                     {
+                        Version = Version,
                         Time = DateTime.Now,
                         Type = p.OnlineType,
                         ApplicationId = p.OnlineApplication,

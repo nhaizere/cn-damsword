@@ -3,7 +3,7 @@ using DamSword.Watch.Vk.DTO;
 
 namespace DamSword.Watch.Vk
 {
-    public class VkOnlineSnapshot
+    public class VkOnlineSnapshot : SnapshotBase
     {
         public DateTime Time { get; set; }
         public OnlineType Type { get; set; }
