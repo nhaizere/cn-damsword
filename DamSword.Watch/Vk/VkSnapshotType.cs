@@ -1,6 +1,6 @@
 ﻿namespace DamSword.Watch.Vk
 {
-    public enum VkDataSnapshotType
+    public enum VkSnapshotType
     {
         Online = 0,
         Detailed = 1

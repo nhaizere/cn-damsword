@@ -183,5 +183,21 @@ namespace DamSword.Common
                 batch = self.Take(count);
             }
         }
+
+        public static void Feed<T>(this IEnumerable<T> self, Func<T, T, bool> comparer, Action<IEnumerable<T>> chunkEvaluator)
+        {
+            if (self == null)
+                throw new ArgumentNullException(nameof(self));
+
+            var last = self.FirstOrDefault();
+            while (last != null)
+            {
+                var chunk = self.TakeWhile(i => comparer(i, last));
+                chunkEvaluator(chunk);
+                
+                self = self.Skip(chunk.Count());
+                last = self.FirstOrDefault();
+            }
+        }
     }
 }

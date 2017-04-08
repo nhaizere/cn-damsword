@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
@@ -78,7 +79,7 @@ namespace DamSword.Watch.Vk
                 throw new ArgumentException($"Maximum count is \"{MaxStackSize}\".", nameof(personIds));
 
             var webResourceId = WebResourceRepository.Single(r => r.Uuid == WebResourceUuids.Vk, r => r.Id);
-            var provider = PersonMetaProviderRepository.Single(p => p.Uuid == PersonMetaProviderUuid);
+            var providerId = PersonMetaProviderRepository.Single(p => p.Uuid == PersonMetaProviderUuid, p => p.Id);
             var personAccountDict = MetaAccountRepository.Select(a => a.WebResourceId == webResourceId && personIds.Contains(a.PersonId))
                 .GroupBy(a => a.PersonId)
                 .ToDictionary(g => g.Key, g => g.Select(a => a.AccountId));
@@ -92,7 +93,7 @@ namespace DamSword.Watch.Vk
 
                 foreach (var onlineSnapshot in onlineSnapshots)
                 {
-                    var todayOnlineDataSnapshot = MetaDataSnapshotRepository.GetOrFetchDataSnapshot(provider.Id, personId, accountSnapshot.Key, onlineSnapshot.Time, (int)VkDataSnapshotType.Online);
+                    var todayOnlineDataSnapshot = MetaDataSnapshotRepository.GetOrFetchDataSnapshot(providerId, personId, accountSnapshot.Key, onlineSnapshot.Time, (int)VkSnapshotType.Online);
                     var snapshots = todayOnlineDataSnapshot.GetSnapshots<VkOnlineSnapshot>().Append(onlineSnapshot).ToArray();
 
                     todayOnlineDataSnapshot.SetSnapshots(snapshots);
@@ -106,6 +107,57 @@ namespace DamSword.Watch.Vk
         public void FetchMeta(IEnumerable<long> personIds, FetchType type, DateTime? until)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<OnlineTimeline> GetOnlineTimelines(DateTime begin, DateTime end, IEnumerable<long> personIds)
+        {
+            var metaDataSnapshots = MetaDataSnapshotRepository
+                .Select(s => s.Provider.Uuid == PersonMetaProviderUuid && s.SnapshotType == (int)VkSnapshotType.Online && begin <= s.Date && end >= s.Date)
+                .ToArray();
+
+            var personOnlineDataSnapshots = metaDataSnapshots
+                .GroupBy(s => s.AccountId)
+                .Select(g => new
+                {
+                    g.First().PersonId,
+                    AccountId = g.Key,
+                    Snapshots = g.SelectMany(s => s.GetSnapshots<VkOnlineSnapshot>())
+                })
+                .ToArray();
+
+            return personOnlineDataSnapshots.Select(os =>
+            {
+                var orderedSnapshots = os.Snapshots.OrderBy(s => s.Time).ToArray();
+                var chunks = new List<OnlineTimeline.Chunk>();
+                var timeline = new OnlineTimeline
+                {
+                    From = orderedSnapshots.FirstOrDefault()?.Time ?? end,
+                    PersonId = os.PersonId,
+                    AccountId = os.AccountId,
+                    Chunks = chunks
+                };
+                
+                orderedSnapshots.OrderBy(s => s.Time).Feed(
+                    (a, b) => a.Type == b.Type && a.LastActivity == b.LastActivity && a.LastActivityPlatformId == b.LastActivityPlatformId && a.LastActivityPlatformType == b.LastActivityPlatformType,
+                    snapshots =>
+                    {
+                        var first = snapshots.First();
+                        var last = snapshots.Last();
+                        var chunk = new OnlineTimeline.Chunk
+                        {
+                            OnlineType = (int)first.Type,
+                            OnlineMeta = $"ApplicationId: {first.ApplicationId}, " +
+                                         $"LastActivityPlatformId: {first.LastActivityPlatformId}, " +
+                                         $"LastActivityPlatformType: {first.LastActivityPlatformType}, " +
+                                         $"LastActivity: {first.LastActivity}",
+                            Length = last.Time - first.Time
+                        };
+
+                        chunks.Add(chunk);
+                    });
+                
+                return timeline;
+            });
         }
     }
 }

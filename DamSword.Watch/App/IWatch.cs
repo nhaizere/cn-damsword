@@ -14,5 +14,7 @@ namespace DamSword.Watch
         string GetValidAccountId(string accountId);
         void FetchOnline(IEnumerable<long> personIds);
         void FetchMeta(IEnumerable<long> personIds, FetchType type, DateTime? until);
+
+        IEnumerable<OnlineTimeline> GetOnlineTimelines(DateTime begin, DateTime end, IEnumerable<long> personIds);
     }
 }
