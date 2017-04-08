@@ -6,7 +6,8 @@ namespace DamSword.Watch
 {
     public interface IWatchService : IService
     {
-        string Uuid { get; }
+        IEnumerable<long> WebResourceIds { get; }
+        string PersonMetaProviderUuid { get; }
         int MaxStackSize { get; }
 
         void EnsureRegistered();

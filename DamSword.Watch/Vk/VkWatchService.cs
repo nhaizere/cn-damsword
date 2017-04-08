@@ -21,16 +21,16 @@ namespace DamSword.Watch.Vk
         public IWebResourceRepository WebResourceRepository { get; set; }
         public IUnitOfWork UnitOfWork { get; set; }
         public IVkOnlineProvider VkOnlineProvider { get; set; }
-
-        public const string WatchServiceUuid = "19178CEB-882F-4CCB-8EDD-EE0CF694E86F";
-        private const int PersonPerStackLimit = 20;
-
+        
         private const string WebResourceName = "VKontakte";
         private const string WebResourceUrl = "https://vk.com";
         private const string WebResourceImageUrl = "/images/resources/vk-icon.png";
 
-        public string Uuid => WatchServiceUuid;
-        public int MaxStackSize => PersonPerStackLimit;
+        public IEnumerable<long> WebResourceIds =>
+            new[] { WebResourceRepository.Single(r => r.Uuid == WebResourceList.Vk, r => r.Id) };
+
+        public string PersonMetaProviderUuid => "19178CEB-882F-4CCB-8EDD-EE0CF694E86F";
+        public int MaxStackSize => 20;
 
         public void EnsureRegistered()
         {
@@ -51,12 +51,12 @@ namespace DamSword.Watch.Vk
                 webResourceId = resource.Id;
             }
 
-            var isProviderRegistered = PersonMetaProviderRepository.Any(r => r.Uuid == Uuid);
+            var isProviderRegistered = PersonMetaProviderRepository.Any(r => r.Uuid == PersonMetaProviderUuid);
             if (!isProviderRegistered)
             {
                 PersonMetaProviderRepository.Save(new PersonMetaProvider
                 {
-                    Uuid = Uuid,
+                    Uuid = PersonMetaProviderUuid,
                     Name = typeof(VkWatchService).FullName,
                     WebResourceId = webResourceId
                 });
@@ -73,7 +73,7 @@ namespace DamSword.Watch.Vk
                 throw new ArgumentException($"Maximum count is \"{MaxStackSize}\".", nameof(personIds));
 
             var webResourceId = WebResourceRepository.Single(r => r.Uuid == WebResourceList.Vk, r => r.Id);
-            var provider = PersonMetaProviderRepository.Single(p => p.Uuid == Uuid);
+            var provider = PersonMetaProviderRepository.Single(p => p.Uuid == PersonMetaProviderUuid);
             var personAccountDict = MetaAccountRepository.Select(a => a.WebResourceId == webResourceId && personIds.Contains(a.PersonId))
                 .GroupBy(a => a.PersonId)
                 .ToDictionary(g => g.Key, g => g.Select(a => a.AccountId));
