@@ -2,6 +2,6 @@
 {
     public interface IObject
     {
-        long Id { get; }
+        long Id { get; set; }
     }
 }

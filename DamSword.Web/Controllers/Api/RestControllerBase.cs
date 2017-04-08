@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 using DamSword.Common;
 using DamSword.Data;
+using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
 using DamSword.Services;
 using DamSword.Services.Exceptions;
@@ -24,7 +26,16 @@ namespace DamSword.Web.Controllers.Api
         protected readonly IEntityService<TEntity> Service;
         protected readonly IUnitOfWork UnitOfWork;
 
-        public RestControllerBase(IEntityRepository<TEntity> repository, IEntityService<TEntity> service, IUnitOfWork unitOfWork)
+        protected virtual UserPermissions? CreatePermissions { get; } = null;
+        protected virtual UserPermissions? ReadPermissions { get; } = null;
+        protected virtual UserPermissions? UpdatePermissions { get; } = null;
+        protected virtual UserPermissions? DeletePermissions { get; } = null;
+
+        protected virtual Expression<Func<TEntity, bool>> Predicate => e => true;
+        protected abstract Expression<Func<TEntity, TObject>> ReadMap { get; }
+        protected abstract Expression<Func<TObject, TEntity>> WriteMap { get; }
+
+        protected RestControllerBase(IEntityRepository<TEntity> repository, IEntityService<TEntity> service, IUnitOfWork unitOfWork)
         {
             Repository = repository;
             Service = service;
@@ -32,20 +43,66 @@ namespace DamSword.Web.Controllers.Api
         }
 
         [HttpGet]
-        public abstract IActionResult List([FromQuery] Request<GenericListFetch> request);
+        public virtual IActionResult List([FromQuery] Request<GenericListFetch> request)
+        {
+            if (ReadPermissions.HasValue)
+                this.Require(ReadPermissions.Value);
+
+            var items = Repository
+                .QueryApiListRequest(request.Data)
+                .Where(Predicate)
+                .Select(ReadMap)
+                .ToArray();
+
+            return this.ApiListResult(request, items);
+        }
 
         [HttpGet]
-        public abstract IActionResult Details([FromQuery] Request<long> request);
+        public virtual IActionResult Details([FromQuery] Request<long> request)
+        {
+            if (ReadPermissions.HasValue)
+                this.Require(ReadPermissions.Value);
+            
+            var item = Repository
+                .Select(Predicate)
+                .Where(e => e.Id == request.Data)
+                .Select(ReadMap)
+                .SingleOrDefault();
+
+            if (item == null)
+                throw new RequestException(HttpStatusCode.NotFound);
+
+            return this.ApiResult(request, item);
+        }
 
         [HttpPost]
-        public abstract IActionResult Create([FromBody] Request<TObject> request);
+        public virtual IActionResult Create([FromBody] Request<TObject> request)
+        {
+            if (CreatePermissions.HasValue)
+                this.Require(CreatePermissions.Value);
+
+            request.Data.Id = 0;
+            var id = Store(request.Data, WriteMap);
+
+            return this.ApiResult(request, id);
+        }
 
         [HttpPut]
-        public abstract IActionResult Update([FromBody] Request<TObject> request);
+        public virtual IActionResult Update([FromBody] Request<TObject> request)
+        {
+            if (UpdatePermissions.HasValue)
+                this.Require(UpdatePermissions.Value);
+
+            Store(request.Data, WriteMap);
+            return this.ApiSuccessResult(request);
+        }
 
         [HttpDelete]
         public virtual IActionResult Delete([FromQuery] Request<long> request)
         {
+            if (DeletePermissions.HasValue)
+                this.Require(DeletePermissions.Value);
+
             Service.Delete(request.Data);
             return this.ApiSuccessResult(request);
         }
