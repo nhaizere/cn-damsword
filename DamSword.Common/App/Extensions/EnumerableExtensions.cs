@@ -172,5 +172,16 @@ namespace DamSword.Common
 
             return count;
         }
+
+        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> self, int count)
+        {
+            var batch = self.Take(count);
+            while (batch.Any())
+            {
+                yield return batch;
+                self = self.Skip(count);
+                batch = self.Take(count);
+            }
+        }
     }
 }
