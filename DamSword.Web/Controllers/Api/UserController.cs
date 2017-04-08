@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Net;
-using DamSword.Common;
 using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
@@ -77,7 +76,7 @@ namespace DamSword.Web.Controllers.Api
         [Require(UserPermissions.ManageUsers)]
         public override IActionResult Update(Request<DTO.Objects.User> request)
         {
-            var id = Store(request.Data, o => new User
+            Store(request.Data, o => new User
             {
                 Alias = o.Alias,
                 Login = o.Login,
