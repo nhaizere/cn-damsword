@@ -33,43 +33,5 @@ namespace DamSword.Web.Controllers
                 IsInitialized = hasOwner
             });
         }
-
-        [HttpPost]
-        public IActionResult Init(InitSaveModel model)
-        {
-            var hasOwner = _userRepository.GetOwner() != null;
-            if (hasOwner)
-                throw new InvalidOperationException("Application is already initialized.");
-
-            if (model.Alias?.Length < 5)
-                throw new InvalidOperationException($"\"{nameof(model.Alias)}\" length must be at least 5 characters long.");
-            if (model.Login?.Length < 5)
-                throw new InvalidOperationException($"\"{nameof(model.Login)}\" length must be at least 5 characters long.");
-            if (model.Password?.Length < 6)
-                throw new InvalidOperationException($"\"{nameof(model.Password)}\" length must be at least 5 characters long.");
-
-            _userRepository.Save(new User
-            {
-                Alias = model.Alias,
-                Login = model.Login,
-                PasswordHash = PasswordUtils.CreateHash(model.Password),
-                HierarchyLevel = 0,
-                Permissions = UserPermissions.Owner
-            });
-
-            var watchServices = ServiceLocator.Resolve<IEnumerable<IWatchService>>();
-            foreach (var watchService in watchServices)
-            {
-                watchService.EnsureRegistered();
-            }
-
-            _unitOfWork.Commit();
-
-            var isLoggedIn = _authenticationService.TryLogIn(model.Login, model.Password, false, HttpContext);
-            if (!isLoggedIn)
-                throw new InvalidOperationException("Unable to perform Authentication for Owner.");
-
-            return RedirectToAction("Details", "Dashboard");
-        }
     }
 }
