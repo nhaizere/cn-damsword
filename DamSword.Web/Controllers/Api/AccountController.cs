@@ -20,15 +20,15 @@ namespace DamSword.Web.Controllers.Api
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEnumerable<IWatchService> _watchServices;
+        private readonly IEnumerable<IWatch> _watches;
 
-        public AccountController(IAuthenticationService authenticationService, IUserRepository userRepository, IUserService userService, IUnitOfWork unitOfWork, IEnumerable<IWatchService> watchServices)
+        public AccountController(IAuthenticationService authenticationService, IUserRepository userRepository, IUserService userService, IUnitOfWork unitOfWork, IEnumerable<IWatch> watches)
         {
             _authenticationService = authenticationService;
             _userRepository = userRepository;
             _userService = userService;
             _unitOfWork = unitOfWork;
-            _watchServices = watchServices;
+            _watches = watches;
         }
 
         [HttpPost, AjaxOnly]
@@ -74,7 +74,7 @@ namespace DamSword.Web.Controllers.Api
                 Permissions = UserPermissions.Owner
             });
             
-            foreach (var watchService in _watchServices)
+            foreach (var watchService in _watches)
             {
                 watchService.EnsureRegistered();
             }

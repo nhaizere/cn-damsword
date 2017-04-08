@@ -4,6 +4,11 @@ using DamSword.Data;
 using DamSword.Data.Entities;
 using DamSword.Data.Repositories;
 using DamSword.Services;
+using DamSword.Services.Entity;
+using DamSword.Web.Attributes;
+using DamSword.Web.DTO;
+using DamSword.Web.DTO.Watch;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DamSword.Web.Controllers.Api
 {
@@ -34,5 +39,14 @@ namespace DamSword.Web.Controllers.Api
                 PersonId = o.PersonId,
                 WebResourceId = o.WebResourceId
             };
+
+        [HttpPost, AjaxOnly]
+        public IActionResult Set([FromBody] Request<Set> request)
+        {
+            ((IWatchService)Service).Set(request.Data.WebResourceId, request.Data.AccountId);
+            UnitOfWork.Commit();
+
+            return this.ApiSuccessResult(request);
+        }
     }
 }

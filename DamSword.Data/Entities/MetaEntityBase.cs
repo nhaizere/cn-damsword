@@ -4,7 +4,8 @@
     {
         Unknown = -1,
         Public = 0,
-        Inferred = 1
+        Inferred = 1,
+        Created = 10
     }
 
     public class MetaEntityBase : EntityBase

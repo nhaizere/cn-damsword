@@ -6,23 +6,38 @@ using System.Threading.Tasks;
 using DamSword.Common;
 using DamSword.Watch.Vk.DTO;
 
-namespace DamSword.Watch.Vk.Providers
+namespace DamSword.Watch.Vk
 {
-    public interface IVkOnlineProvider : IService
+    public interface IVkApiConnector : IService
     {
-        string Version { get; }
+        Task<string> GetValidAccountId(string accountId);
         Task<Dictionary<string, IEnumerable<VkOnlineSnapshot>>> FetchOnlineSnapshots(IEnumerable<string> references);
     }
 
-    public class VkOnlineProvider : IVkOnlineProvider
+    public class VkApiConnector : IVkApiConnector
     {
+        private const string GetValidAccountIdUrl = "https://api.vk.com/method/getProfiles?domains={0}&fields=id";
         private const string FetchOnlineUrl = "https://api.vk.com/method/getProfiles?domains={0}&fields=online,last_seen";
+        private const string Version = "A1336E64-DDE9-426D-AA1D-063AA77367D3";
 
-        public string Version => "A1336E64-DDE9-426D-AA1D-063AA77367D3";
+        public Task<string> GetValidAccountId(string accountId)
+        {
+            if (accountId == null)
+                throw new ArgumentNullException(nameof(accountId));
+
+            return Task.Run(async () =>
+            {
+                var url = string.Format(GetValidAccountIdUrl, accountId);
+                var response = await ApiConnector.JsonRequest<ApiResponse<IEnumerable<User>>>(url, HttpMethod.Get);
+                var result = response?.Response;
+                var id = result?.FirstOrDefault()?.Id;
+
+                return id != null ? $"id{id}" : null;
+            });
+        }
 
         public Task<Dictionary<string, IEnumerable<VkOnlineSnapshot>>> FetchOnlineSnapshots(IEnumerable<string> references)
         {
-
             if (references == null)
                 throw new ArgumentNullException(nameof(references));
 

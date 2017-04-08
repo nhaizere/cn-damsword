@@ -54,7 +54,7 @@ namespace DamSword.Web.Controllers
                 person = ServiceLocator.Resolve<IPersonRepository>().Single(p => p.Names.Any(n => n.NameKind == MetaNameKind.Alias && n.Name == "TheQueen"));
             }
 
-            ServiceLocator.Resolve<IWatchService>().FetchOnline(new[] { person.Id });
+            ServiceLocator.Resolve<IWatch>().FetchOnline(new[] { person.Id });
             return View("~/Views/Dashboard/Details.cshtml");
         }
     }

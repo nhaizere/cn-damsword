@@ -4,13 +4,14 @@ using DamSword.Common;
 
 namespace DamSword.Watch
 {
-    public interface IWatchService : IService
+    public interface IWatch : IService
     {
-        IEnumerable<long> WebResourceIds { get; }
+        long WebResourceId { get; }
         string PersonMetaProviderUuid { get; }
         int MaxStackSize { get; }
 
         void EnsureRegistered();
+        string GetValidAccountId(string accountId);
         void FetchOnline(IEnumerable<long> personIds);
         void FetchMeta(IEnumerable<long> personIds, FetchType type, DateTime? until);
     }

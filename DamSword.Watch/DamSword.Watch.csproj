@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DamSword.Common\DamSword.Common.csproj" />
     <ProjectReference Include="..\DamSword.Data\DamSword.Data.csproj" />
+    <ProjectReference Include="..\DamSword.Services\DamSword.Services.csproj" />
   </ItemGroup>
 
 </Project>

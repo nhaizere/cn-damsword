@@ -10,36 +10,36 @@ namespace DamSword.Web.Controllers
     public class CronController : Controller
     {
         private readonly IWatchRepository _watchRepository;
-        private readonly IEnumerable<IWatchService> _watchServices;
+        private readonly IEnumerable<IWatch> _watches;
         
-        public CronController(IWatchRepository watchRepository, IEnumerable<IWatchService> watchServices)
+        public CronController(IWatchRepository watchRepository, IEnumerable<IWatch> watches)
         {
             _watchRepository = watchRepository;
-            _watchServices = watchServices;
+            _watches = watches;
         }
 
         [Route("/cron/fetch-data")]
         public IActionResult FetchData()
         {
-            var watchServicesWebSesourceIds = _watchServices.ToDictionary(s => s, s => s.WebResourceIds);
-            var webResourceIds = watchServicesWebSesourceIds.Values.SelectMany(ids => ids).Distinct().ToArray();
+            var watchWebSesourceIdDict = _watches.ToDictionary(s => s, s => s.WebResourceId);
+            var webResourceIds = watchWebSesourceIdDict.Values.Distinct().ToArray();
             var watches = _watchRepository.Select(w => webResourceIds.Contains(w.WebResourceId), w => new
             {
                 w.PersonId,
                 w.WebResourceId
             }).ToArray();
 
-            foreach (var watchService in _watchServices)
+            foreach (var watch in _watches)
             {
                 var relatedWatchIds = watches
-                    .Where(w => watchServicesWebSesourceIds[watchService].Contains(w.WebResourceId))
+                    .Where(w => w.WebResourceId == watchWebSesourceIdDict[watch])
                     .Select(w => w.PersonId)
                     .Distinct()
                     .ToArray();
 
-                foreach (var watchIdBatch in relatedWatchIds.Batch(watchService.MaxStackSize))
+                foreach (var watchIdBatch in relatedWatchIds.Batch(watch.MaxStackSize))
                 {
-                    watchService.FetchOnline(watchIdBatch);
+                    watch.FetchOnline(watchIdBatch);
                 }
             }
             
