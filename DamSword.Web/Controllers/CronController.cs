@@ -18,6 +18,7 @@ namespace DamSword.Web.Controllers
             _watches = watches;
         }
 
+        [HttpPost]
         [Route("/cron/fetch-data")]
         public IActionResult FetchData()
         {
