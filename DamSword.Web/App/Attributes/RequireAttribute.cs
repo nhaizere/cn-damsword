@@ -1,5 +1,5 @@
-﻿using System;
-using DamSword.Data.Entities;
+﻿using DamSword.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DamSword.Web.Attributes
@@ -15,8 +15,7 @@ namespace DamSword.Web.Attributes
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!CurrentPermissions.Has(Permissions))
-                throw new UnauthorizedAccessException();
+            (context.Controller as Controller)?.Require(Permissions);
         }
     }
 }
